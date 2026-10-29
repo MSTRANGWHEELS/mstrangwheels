@@ -138,99 +138,164 @@
 
 /* ========================================================
    GENTLE 3D CARTOON FLOATING & ROTATION ANIMATIONS
-   - Floating distance: 6–12px
-   - Floating duration: 4–7s
-   - Rotation: 2–5 degrees
+   - Floating distance: 5–10px
+   - Floating duration: 4–7s (Planets: 18–25s slow rotation)
+   - Rotation: 2–5 degrees (Sun rays: 22s continuous 360° rotation)
    - Smooth ease-in-out infinite looping
+   - Sun face remains upright and readable at all times
    ======================================================== */
-@keyframes floatGentlePlanet {
-  0%, 100% {
+
+/* Purple Planet: Slowly rotate planet & ring (18-25s) with subtle 5-10px floating */
+@keyframes floatPlanetCute {
+  0% {
     transform: translateY(0px) rotate(0deg);
   }
+  25% {
+    transform: translateY(-5px) rotate(2.5deg);
+  }
   50% {
-    transform: translateY(-10px) rotate(3deg);
+    transform: translateY(-9px) rotate(0deg);
+  }
+  75% {
+    transform: translateY(-4px) rotate(-2.5deg);
+  }
+  100% {
+    transform: translateY(0px) rotate(0deg);
   }
 }
 
+/* Smiling Sun: Gently sway side to side with soft warm glow (face upright!) */
+@keyframes swaySunCute {
+  0%, 100% {
+    transform: translateY(0px) rotate(-3deg);
+    filter: drop-shadow(0 6px 16px rgba(255, 214, 0, 0.45));
+  }
+  50% {
+    transform: translateY(-6px) rotate(3deg);
+    filter: drop-shadow(0 10px 24px rgba(255, 214, 0, 0.65));
+  }
+}
+
+/* Sun Rays: Slowly rotate 360° continuously */
+@keyframes rotateSunRays {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Rocket: Gently hover up and down with slight tilt */
+@keyframes floatGentleRocket {
+  0%, 100% {
+    transform: translateY(0px) rotate(-12deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(-9deg);
+  }
+}
+
+/* Rocket Engine: Soft pulsing engine glow */
+@keyframes enginePulse {
+  0%, 100% {
+    opacity: 0.82;
+    filter: drop-shadow(0 0 4px #FF6D00);
+  }
+  50% {
+    opacity: 1;
+    filter: drop-shadow(0 0 10px #FFEA00);
+  }
+}
+
+/* Astronaut: Float slowly in zero gravity with gentle rocking */
 @keyframes floatGentleAstronaut {
   0%, 100% {
     transform: translateY(0px) rotate(0deg);
   }
   35% {
-    transform: translateY(-8px) rotate(-4deg);
+    transform: translateY(-7px) rotate(-3.5deg);
   }
   70% {
-    transform: translateY(-12px) rotate(3deg);
+    transform: translateY(-10px) rotate(2.5deg);
   }
 }
 
-@keyframes floatGentleRocket {
-  0%, 100% {
-    transform: translateY(0px) rotate(0deg);
-  }
-  50% {
-    transform: translateY(-9px) rotate(2.5deg);
-  }
-}
-
-@keyframes rotateGentleSun {
-  0% {
-    transform: rotate(0deg) scale(1);
-  }
-  50% {
-    transform: rotate(180deg) scale(1.03);
-  }
-  100% {
-    transform: rotate(360deg) scale(1);
-  }
-}
-
-@keyframes twinkleStar {
-  0%, 100% {
-    opacity: 0.35;
-    transform: scale(0.85);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.18);
-  }
-}
-
+/* Schoolbooks: Small gentle rocking float */
 @keyframes rockGentleBooks {
   0%, 100% {
     transform: translateY(0px) rotate(0deg);
   }
   50% {
-    transform: translateY(-7px) rotate(-3.5deg);
+    transform: translateY(-6px) rotate(-3deg);
+  }
+}
+
+/* Stars: Soft twinkling without rapid flashing */
+@keyframes twinkleSoft {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(0.88);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.12);
   }
 }
 
 .animate-float-planet {
-  animation: floatGentlePlanet 5.5s ease-in-out infinite;
+  animation: floatPlanetCute 20s ease-in-out infinite;
 }
 .animate-float-planet-alt {
-  animation: floatGentlePlanet 6.2s ease-in-out 1.2s infinite reverse;
+  animation: floatPlanetCute 23s ease-in-out 2.5s infinite reverse;
 }
-.animate-float-astronaut {
-  animation: floatGentleAstronaut 6s ease-in-out 0.6s infinite;
+.animate-sway-sun {
+  animation: swaySunCute 5.5s ease-in-out infinite;
+}
+.animate-rotate-rays {
+  animation: rotateSunRays 22s linear infinite;
+  transform-origin: center;
 }
 .animate-float-rocket {
-  animation: floatGentleRocket 4.8s ease-in-out 1.5s infinite;
+  animation: floatGentleRocket 5.2s ease-in-out infinite;
 }
-.animate-rotate-sun {
-  animation: rotateGentleSun 24s linear infinite;
+.animate-engine-glow {
+  animation: enginePulse 2.4s ease-in-out infinite;
 }
-.animate-twinkle-1 {
-  animation: twinkleStar 3s ease-in-out infinite;
-}
-.animate-twinkle-2 {
-  animation: twinkleStar 3.8s ease-in-out 1.2s infinite;
-}
-.animate-twinkle-3 {
-  animation: twinkleStar 2.6s ease-in-out 0.8s infinite;
+.animate-float-astronaut {
+  animation: floatGentleAstronaut 6.8s ease-in-out infinite;
 }
 .animate-rock-books {
-  animation: rockGentleBooks 5s ease-in-out infinite;
+  animation: rockGentleBooks 5.4s ease-in-out infinite;
+}
+.animate-twinkle-1 {
+  animation: twinkleSoft 3.2s ease-in-out infinite;
+}
+.animate-twinkle-2 {
+  animation: twinkleSoft 4.2s ease-in-out 1.2s infinite;
+}
+.animate-twinkle-3 {
+  animation: twinkleSoft 2.8s ease-in-out 0.7s infinite;
+}
+.animate-twinkle-4 {
+  animation: twinkleSoft 4.8s ease-in-out 1.9s infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-float-planet,
+  .animate-float-planet-alt,
+  .animate-sway-sun,
+  .animate-rotate-rays,
+  .animate-float-rocket,
+  .animate-engine-glow,
+  .animate-float-astronaut,
+  .animate-rock-books,
+  .animate-twinkle-1,
+  .animate-twinkle-2,
+  .animate-twinkle-3,
+  .animate-twinkle-4 {
+    animation: none !important;
+  }
 }
 
 /* Custom fade-in animation for modals */

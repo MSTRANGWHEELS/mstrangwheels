@@ -69,11 +69,12 @@ export const CartoonLandscapeBackground: React.FC = () => {
       />
 
       {/* ========================================================
-          2. TOP-LEFT: CUTE 3D SMILING SATURN (Lavender with Golden Rings) – Enlarged by 35%
+          2. TOP-LEFT: CUTE 3D SMILING SATURN (Lavender with Golden Rings)
+          - Slowly rotates planet & ring (18-25s) with subtle 5-10px float
           ======================================================== */}
-      <div className="absolute top-2 left-2 sm:top-4 sm:left-4 md:top-6 md:left-6 animate-float-planet">
+      <div className="absolute top-2 left-2 sm:top-3 sm:left-3 md:top-4 md:left-4 animate-float-planet pointer-events-none">
         <svg
-          className="w-32 h-32 sm:w-44 sm:h-44 md:w-56 md:h-56 drop-shadow-[0_10px_25px_rgba(179,136,255,0.45)]"
+          className="w-28 h-28 sm:w-36 sm:h-36 md:w-44 md:h-44 xl:w-48 xl:h-48 drop-shadow-[0_10px_25px_rgba(179,136,255,0.45)]"
           viewBox="0 0 160 160"
           fill="none"
         >
@@ -161,11 +162,14 @@ export const CartoonLandscapeBackground: React.FC = () => {
       </div>
 
       {/* ========================================================
-          3. TOP-RIGHT: CUTE SMILING STAR / GOLDEN SUN PLANET – Enlarged by 35%
+          3. TOP-RIGHT: CUTE SMILING STAR / GOLDEN SUN PLANET
+          - Gently sways side to side with soft warm glow
+          - Sun rays rotate 360° continuously
+          - Smiling kawaii face remains upright and readable
           ======================================================== */}
-      <div className="absolute top-2 right-2 sm:top-4 sm:right-4 md:top-6 md:right-6 animate-rotate-sun">
+      <div className="absolute top-2 right-2 sm:top-3 sm:right-3 md:top-4 md:right-4 animate-sway-sun pointer-events-none">
         <svg
-          className="w-32 h-32 sm:w-44 sm:h-44 md:w-52 md:h-52 drop-shadow-[0_10px_30px_rgba(255,214,0,0.55)]"
+          className="w-28 h-28 sm:w-36 sm:h-36 md:w-44 md:h-44 xl:w-48 xl:h-48 drop-shadow-[0_8px_24px_rgba(255,214,0,0.5)]"
           viewBox="0 0 160 160"
           fill="none"
         >
@@ -182,8 +186,8 @@ export const CartoonLandscapeBackground: React.FC = () => {
             </linearGradient>
           </defs>
 
-          {/* Twinkling Star Points / Beams */}
-          <g className="origin-center" style={{ transformOrigin: '80px 80px' }}>
+          {/* Continuously Rotating Star Points / Beams (22s slow rotation) */}
+          <g className="animate-rotate-rays origin-center" style={{ transformOrigin: '80px 80px' }}>
             {[0, 45, 90, 135, 180, 225, 270, 315].map((deg) => (
               <polygon
                 key={deg}
@@ -195,7 +199,7 @@ export const CartoonLandscapeBackground: React.FC = () => {
             ))}
           </g>
 
-          {/* Golden Smiling Spherical Core */}
+          {/* Golden Smiling Spherical Core (Always Upright!) */}
           <circle cx="80" cy="80" r="46" fill="url(#sunBody)" />
           {/* 3D highlight */}
           <circle cx="68" cy="64" r="14" fill="#FFFFFF" opacity="0.38" />
@@ -222,11 +226,13 @@ export const CartoonLandscapeBackground: React.FC = () => {
       </div>
 
       {/* ========================================================
-          4. MID-LEFT: CUTE CARTOON SPACESHIP / RETRO ROCKET – Enlarged by 35%
+          4. MID-LEFT: CUTE CARTOON SPACESHIP / RETRO ROCKET
+          - Gently hovers up and down with slight tilt
+          - Soft pulsing engine glow
           ======================================================== */}
-      <div className="absolute top-1/3 -left-3 sm:left-2 md:left-4 animate-float-rocket">
+      <div className="absolute top-[38%] left-1 sm:left-2 md:left-3 xl:left-4 animate-float-rocket pointer-events-none">
         <svg
-          className="w-26 h-26 sm:w-34 sm:h-34 md:w-42 md:h-42 -rotate-12 drop-shadow-[0_8px_22px_rgba(0,229,255,0.45)]"
+          className="w-22 h-22 sm:w-28 sm:h-28 md:w-34 md:h-34 xl:w-38 xl:h-38 drop-shadow-[0_8px_22px_rgba(0,229,255,0.45)]"
           viewBox="0 0 120 120"
           fill="none"
         >
@@ -247,12 +253,11 @@ export const CartoonLandscapeBackground: React.FC = () => {
             </linearGradient>
           </defs>
 
-          {/* Glowing Flame Trail */}
+          {/* Glowing Flame Trail with Soft Pulsing Glow */}
           <path
             d="M 54 86 Q 44 112 50 118 Q 60 106 60 114 Q 62 106 70 118 Q 76 112 66 86 Z"
             fill="url(#flameGrad)"
-            opacity="0.95"
-            className="animate-pulse"
+            className="animate-engine-glow"
           />
           {/* Inner Cyan Flame Core */}
           <path
@@ -290,11 +295,13 @@ export const CartoonLandscapeBackground: React.FC = () => {
       </div>
 
       {/* ========================================================
-          5. MID-RIGHT: ADORABLE CARTOON ASTRONAUT KID – Enlarged by 35%
+          5. MID-RIGHT: ADORABLE CARTOON ASTRONAUT KID
+          - Float slowly in zero gravity with gentle rocking
+          - Upright character orientation preserved
           ======================================================== */}
-      <div className="absolute top-1/3 -right-3 sm:right-2 md:right-4 animate-float-astronaut">
+      <div className="absolute top-[38%] right-1 sm:right-2 md:right-3 xl:right-4 animate-float-astronaut pointer-events-none">
         <svg
-          className="w-28 h-28 sm:w-36 sm:h-36 md:w-44 md:h-44 drop-shadow-[0_10px_25px_rgba(0,229,255,0.4)]"
+          className="w-22 h-22 sm:w-28 sm:h-28 md:w-34 md:h-34 xl:w-38 xl:h-38 drop-shadow-[0_10px_25px_rgba(0,229,255,0.4)]"
           viewBox="0 0 120 120"
           fill="none"
         >
@@ -359,11 +366,12 @@ export const CartoonLandscapeBackground: React.FC = () => {
       </div>
 
       {/* ========================================================
-          6. BOTTOM-LEFT: CUTE MINT GREEN 3D PLANET – Enlarged by 35%
+          6. BOTTOM-LEFT: CUTE MINT GREEN 3D PLANET
+          - Slow gentle 3D float and tilt
           ======================================================== */}
-      <div className="absolute -bottom-6 -left-6 sm:bottom-1 sm:left-2 md:bottom-3 md:left-4 animate-float-planet-alt">
+      <div className="absolute -bottom-4 -left-4 sm:bottom-1 sm:left-2 md:bottom-2 md:left-3 animate-float-planet-alt pointer-events-none">
         <svg
-          className="w-28 h-28 sm:w-36 sm:h-36 md:w-44 md:h-44 drop-shadow-[0_10px_25px_rgba(0,230,118,0.4)]"
+          className="w-24 h-24 sm:w-30 sm:h-30 md:w-38 md:h-38 drop-shadow-[0_10px_25px_rgba(0,230,118,0.4)]"
           viewBox="0 0 140 140"
           fill="none"
         >
@@ -392,11 +400,12 @@ export const CartoonLandscapeBackground: React.FC = () => {
       </div>
 
       {/* ========================================================
-          7. BOTTOM-RIGHT: CUTE CANDY PINK 3D PLANET – Enlarged by 35%
+          7. BOTTOM-RIGHT: CUTE CANDY PINK 3D PLANET
+          - Slow gentle 3D float and tilt
           ======================================================== */}
-      <div className="absolute -bottom-6 -right-6 sm:bottom-1 sm:right-2 md:bottom-3 md:right-4 animate-float-planet">
+      <div className="absolute -bottom-4 -right-4 sm:bottom-1 sm:right-2 md:bottom-2 md:right-3 animate-float-planet pointer-events-none">
         <svg
-          className="w-28 h-28 sm:w-36 sm:h-36 md:w-44 md:h-44 drop-shadow-[0_10px_25px_rgba(255,64,129,0.4)]"
+          className="w-24 h-24 sm:w-30 sm:h-30 md:w-38 md:h-38 drop-shadow-[0_10px_25px_rgba(255,64,129,0.4)]"
           viewBox="0 0 140 140"
           fill="none"
         >

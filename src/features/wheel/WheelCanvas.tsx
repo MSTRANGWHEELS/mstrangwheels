@@ -509,19 +509,22 @@ export const WheelCanvas: React.FC<WheelCanvasProps> = ({
     ctx.restore();
 
     ctx.restore();
-  }, [items, rotationAngle, size, winningIndex, isSegmentGlowing, isNumberZoomed, dimOtherLabels]);
-
-  const maxContainer =
-    size < 250
-      ? 'max-w-[170px]'
-      : 'max-w-[360px] sm:max-w-[440px] md:max-w-[480px] lg:max-w-[500px]';
+  }, [items, rotationAngle, size, winningIndex, isSpotlightActive, activeSpotlight, isSegmentGlowing, isNumberZoomed, dimOtherLabels]);
 
   return (
-    <div className={`relative flex items-center justify-center p-1 w-full ${maxContainer} mx-auto`}>
+    <div
+      style={{ maxWidth: `${size}px` }}
+      className="relative flex items-center justify-center p-0.5 w-full mx-auto"
+    >
       <canvas
         ref={canvasRef}
-        style={{ width: '100%', height: 'auto', aspectRatio: '1 / 1', maxWidth: `${size}px` }}
-        className="w-full h-auto aspect-square drop-shadow-[0_12px_36px_rgba(0,0,0,0.6)] select-none block"
+        style={{
+          width: '100%',
+          height: 'auto',
+          aspectRatio: '1 / 1',
+          maxWidth: `${size}px`,
+        }}
+        className="w-full h-auto aspect-square drop-shadow-[0_10px_30px_rgba(0,0,0,0.55)] select-none block"
       />
     </div>
   );

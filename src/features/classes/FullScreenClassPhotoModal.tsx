@@ -151,7 +151,7 @@ export const FullScreenClassPhotoModal: React.FC<FullScreenClassPhotoModalProps>
           - Surrounding: Tiny Twinkling Stars & Magical Sparkles
           ======================================================== */}
       {/* 1. Top-Left: Cute Smiling 3D Yellow Sun */}
-      <div className="absolute top-2 left-3 sm:top-4 sm:left-6 md:top-5 md:left-8 pointer-events-none select-none z-0 animate-rotate-sun">
+      <div className="absolute top-2 left-3 sm:top-4 sm:left-6 md:top-5 md:left-8 pointer-events-none select-none z-0 animate-sway-sun">
         <svg className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 drop-shadow-[0_4px_16px_rgba(255,214,0,0.6)]" viewBox="0 0 100 100" fill="none">
           <defs>
             <radialGradient id="pvSun" cx="35%" cy="30%" r="65%">
@@ -165,13 +165,15 @@ export const FullScreenClassPhotoModal: React.FC<FullScreenClassPhotoModalProps>
               <stop offset="100%" stopColor="#FFB300" />
             </linearGradient>
           </defs>
-          {/* 8 Sun Beams */}
-          {[0, 45, 90, 135, 180, 225, 270, 315].map((deg) => (
-            <polygon key={deg} points="47,4 53,4 50,16" fill="url(#pvSunRay)" transform={`rotate(${deg} 50 50)`} opacity="0.9" />
-          ))}
+          {/* 8 Sun Beams with Slow Continuous 360° Rotation (22s) */}
+          <g className="animate-rotate-rays origin-center" style={{ transformOrigin: '50px 50px' }}>
+            {[0, 45, 90, 135, 180, 225, 270, 315].map((deg) => (
+              <polygon key={deg} points="47,4 53,4 50,16" fill="url(#pvSunRay)" transform={`rotate(${deg} 50 50)`} opacity="0.9" />
+            ))}
+          </g>
           <circle cx="50" cy="50" r="30" fill="url(#pvSun)" />
           <circle cx="42" cy="40" r="9" fill="#FFFFFF" opacity="0.4" />
-          {/* Eyes & Smile */}
+          {/* Eyes & Smile (Always Upright!) */}
           <circle cx="41" cy="48" r="3.2" fill="#2E1600" />
           <circle cx="39.5" cy="46.5" r="1.2" fill="#FFFFFF" />
           <circle cx="59" cy="48" r="3.2" fill="#2E1600" />
@@ -182,8 +184,8 @@ export const FullScreenClassPhotoModal: React.FC<FullScreenClassPhotoModalProps>
         </svg>
       </div>
 
-      {/* 2. Top-Right: Cute Pastel Purple Planet with Glowing Ring */}
-      <div className="absolute top-3 right-36 sm:top-4 sm:right-44 md:top-5 md:right-56 pointer-events-none select-none z-0 animate-float-planet">
+      {/* 2. Top-Right: Cute Pastel Purple Planet with Glowing Ring (Safe from Close Button) */}
+      <div className="absolute top-14 right-4 sm:top-16 sm:right-6 md:top-18 md:right-8 pointer-events-none select-none z-0 animate-float-planet-alt">
         <svg className="w-14 h-14 sm:w-18 sm:h-18 md:w-22 md:h-22 drop-shadow-[0_4px_16px_rgba(179,136,255,0.6)]" viewBox="0 0 100 100" fill="none">
           <defs>
             <radialGradient id="pvPurple" cx="35%" cy="30%" r="65%">
@@ -282,7 +284,7 @@ export const FullScreenClassPhotoModal: React.FC<FullScreenClassPhotoModalProps>
               <stop offset="100%" stopColor="#FF1744" />
             </linearGradient>
           </defs>
-          <path d="M 36 58 Q 28 76 34 78 Q 40 70 40 76 Q 42 70 46 78 Q 52 76 44 58 Z" fill="url(#pvFlame)" className="animate-pulse" />
+          <path d="M 36 58 Q 28 76 34 78 Q 40 70 40 76 Q 42 70 46 78 Q 52 76 44 58 Z" fill="url(#pvFlame)" className="animate-engine-glow" />
           <path d="M 28 45 L 20 58 L 30 55 Z" fill="#FF5252" />
           <path d="M 52 45 L 60 58 L 50 55 Z" fill="#FF5252" />
           <path d="M 40 10 C 30 24 28 44 30 58 L 50 58 C 52 44 50 24 40 10 Z" fill="#FFFFFF" stroke="#90A4AE" strokeWidth="1.5" />

@@ -422,32 +422,43 @@ export function App() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Compute dynamic responsive wheel size (25–30% larger whenever viewport permits)
+  // Compute dynamic responsive wheel size (proportional across 1080p, 900p, 768p, 720p)
   const responsiveWheelSize = useMemo(() => {
     const isDesktop = viewportSize.width >= 1024;
     if (!isDesktop) {
       // Mobile / Tablet portrait: width-constrained
-      const maxWidth = Math.min(viewportSize.width - 24, 460);
-      const maxHeight = viewportSize.height * 0.48;
-      return Math.max(280, Math.min(maxWidth, maxHeight, 430));
+      const maxWidth = Math.min(viewportSize.width - 32, 400);
+      const maxHeight = viewportSize.height * 0.44;
+      return Math.max(260, Math.min(maxWidth, maxHeight, 360));
     }
 
-    // Desktop / Laptop: 25–30% larger wheel!
-    // Overhead reserved: Header ~118px, Footer ~24px, SPIN NOW button & labels ~88px, Paddings ~24px
-    // Total vertical reserved space outside wheel: ~254px
-    const availableVerticalForWheel = viewportSize.height - 254;
-    // Left column takes ~54% of max-w-[1560px]
-    const availableHorizontalForWheel = (Math.min(viewportSize.width, 1560) * 0.54) - 36;
+    // Height-based desktop scaling (exact 15–20% reductions per user specifications):
+    // 1080p (h >= 1000): max 440px
+    // 900p  (h >= 850):  max 380px
+    // 768p  (h >= 750):  max 340px
+    // 720p  (h < 750):   max 300px
+    let heightCap = 440;
+    if (viewportSize.height < 750) {
+      heightCap = 300;
+    } else if (viewportSize.height < 850) {
+      heightCap = 340;
+    } else if (viewportSize.height < 1000) {
+      heightCap = 380;
+    }
 
-    const calculated = Math.min(availableVerticalForWheel, availableHorizontalForWheel);
-    // 25–30% larger: Up to 560px on 1080p, 510px on 900p, 430px on 768p, 400px on 720p!
-    return Math.max(300, Math.min(560, Math.round(calculated)));
+    // Available space reserved: Header ~140px, Footer ~32px, SPIN NOW button & labels ~78px, Margins ~30px = ~280px
+    const availableVerticalForWheel = Math.max(260, viewportSize.height - 280);
+    // Left column takes ~54% of max-w-[1440px]
+    const availableHorizontalForWheel = (Math.min(viewportSize.width, 1440) * 0.54) - 36;
+
+    const calculated = Math.min(availableVerticalForWheel, availableHorizontalForWheel, heightCap);
+    return Math.max(260, Math.round(calculated));
   }, [viewportSize.width, viewportSize.height]);
 
   const canSpin = !isSpinning && classNames.length > 0;
 
   return (
-    <div className="min-h-screen lg:h-screen lg:max-h-screen lg:h-dvh flex flex-col justify-between font-sans selection:bg-[#00D9F5] selection:text-[#1A0738] overflow-x-hidden text-white overflow-y-auto lg:overflow-y-hidden">
+    <div className="min-h-screen lg:h-screen lg:max-h-screen flex flex-col justify-between font-sans selection:bg-[#00D9F5] selection:text-[#1A0738] overflow-x-hidden text-white overflow-y-auto">
       
       {/* ========================================================
           FULL-SCREEN VIBRANT GALAXY NEON BACKGROUND
@@ -455,69 +466,66 @@ export function App() {
       <CartoonLandscapeBackground />
 
       {/* ========================================================
-          1. HEADER: 40-50% LARGER 3D TITLES & TEACHER PHOTO
+          1. HEADER: COMPACT, PROPORTIONAL 3D TITLES & TEACHER PHOTO
           - Row 1: Premium 3D Golden Ribbon School Name Banner
           - Row 2: Teacher Photo + Ms. Trang's English Classes (3D Word Art) + Decorative Mini Planet
           - Row 3: ⭐ Lucky Class Picker Wheel
           ======================================================== */}
-      <header className="pt-1 pb-0.5 px-3 relative flex-shrink-0 z-10">
-        <div className="max-w-6xl w-full mx-auto galaxy-card rounded-2xl sm:rounded-3xl px-3 py-1.5 sm:px-6 sm:py-2 relative flex flex-col items-center">
+      <header className="pt-1 sm:pt-1.5 pb-0.5 px-3 sm:px-6 relative flex-shrink-0 z-10">
+        <div className="max-w-6xl w-full mx-auto galaxy-card rounded-2xl sm:rounded-3xl px-3 py-1 sm:px-5 sm:py-1.5 relative flex flex-col items-center">
           
-          {/* Centered 3-Row Header (80-90% available width) */}
-          <div className="text-center w-full max-w-4xl xl:max-w-5xl mx-auto px-1 sm:px-3 flex flex-col items-center">
+          {/* Centered 3-Row Header (80-90% available width, ~13-16% viewport height) */}
+          <div className="text-center w-full max-w-3xl xl:max-w-4xl mx-auto px-1 sm:px-3 flex flex-col items-center">
             
-            {/* Row 1: Premium 3D Golden Ribbon School Name Banner (40-50% Larger) */}
+            {/* Row 1: Premium 3D Golden Ribbon School Name Banner */}
             <div className="relative inline-flex items-center justify-center my-0.5 select-none max-w-full">
-              {/* Left Ribbon Wing (Tucked Behind with Dovetail Cut) */}
+              {/* Left Ribbon Wing */}
               <div
-                className="hidden sm:block absolute -left-6 sm:-left-8 md:-left-9 top-1 sm:top-1.5 w-6 sm:w-8 md:w-9 h-[88%] bg-gradient-to-r from-[#FF8F00] via-[#FFB300] to-[#FFD54F] -z-10 shadow-md"
+                className="hidden sm:block absolute -left-5 sm:-left-7 top-1 w-5 sm:w-7 h-[85%] bg-gradient-to-r from-[#FF8F00] via-[#FFB300] to-[#FFD54F] -z-10 shadow-md"
                 style={{ clipPath: 'polygon(100% 0%, 0% 0%, 30% 50%, 0% 100%, 100% 100%)' }}
               />
               {/* Left Underfold Shadow Triangle */}
-              <div className="hidden sm:block absolute -left-2 top-full -mt-2.5 sm:-mt-3 w-0 h-0 border-t-[10px] sm:border-t-[12px] border-t-[#8D4B00] border-l-[7px] sm:border-l-[8px] border-l-transparent -z-10" />
+              <div className="hidden sm:block absolute -left-1.5 top-full -mt-2 w-0 h-0 border-t-[8px] sm:border-t-[10px] border-t-[#8D4B00] border-l-[6px] border-l-transparent -z-10" />
 
               {/* Main Golden Ribbon Body */}
-              <div className="ribbon-golden-3d relative px-4 sm:px-8 md:px-10 lg:px-12 py-1 sm:py-1.5 rounded-sm sm:rounded-md flex items-center justify-center gap-2 sm:gap-3">
-                {/* Specular gloss curve across top */}
+              <div className="ribbon-golden-3d relative px-4 sm:px-6 md:px-8 py-0.5 sm:py-1 rounded-sm sm:rounded-md flex items-center justify-center gap-1.5 sm:gap-2">
                 <div className="pointer-events-none absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/60 to-transparent rounded-t-[inherit]" />
 
-                {/* Left Sparkling Star */}
-                <span className="text-sm sm:text-base md:text-lg animate-pulse drop-shadow-[0_0_6px_#FF8F00]">✨</span>
+                <span className="text-xs sm:text-sm animate-pulse drop-shadow-[0_0_6px_#FF8F00]">✨</span>
 
-                {/* Exact School Name in Deep Red Bold Italic Lettering (40–50% Larger) */}
-                <span className="ribbon-text-red uppercase tracking-wider text-sm sm:text-base md:text-lg lg:text-[21px] xl:text-[24px] 2xl:text-[26px] whitespace-nowrap font-black">
+                {/* Exact School Name in Deep Red Bold Italic Lettering */}
+                <span className="ribbon-text-red uppercase tracking-wider text-xs sm:text-sm md:text-base lg:text-[18px] xl:text-[20px] 2xl:text-[22px] whitespace-nowrap font-black">
                   TRANG TẤN KHƯƠNG PRIMARY SCHOOL
                 </span>
 
-                {/* Right Sparkling Star */}
-                <span className="text-sm sm:text-base md:text-lg animate-pulse drop-shadow-[0_0_6px_#FF8F00]">✨</span>
+                <span className="text-xs sm:text-sm animate-pulse drop-shadow-[0_0_6px_#FF8F00]">✨</span>
               </div>
 
               {/* Right Underfold Shadow Triangle */}
-              <div className="hidden sm:block absolute -right-2 top-full -mt-2.5 sm:-mt-3 w-0 h-0 border-t-[10px] sm:border-t-[12px] border-t-[#8D4B00] border-r-[7px] sm:border-r-[8px] border-r-transparent -z-10" />
-              {/* Right Ribbon Wing (Tucked Behind with Dovetail Cut) */}
+              <div className="hidden sm:block absolute -right-1.5 top-full -mt-2 w-0 h-0 border-t-[8px] sm:border-t-[10px] border-t-[#8D4B00] border-r-[6px] border-r-transparent -z-10" />
+              {/* Right Ribbon Wing */}
               <div
-                className="hidden sm:block absolute -right-6 sm:-right-8 md:-right-9 top-1 sm:top-1.5 w-6 sm:w-8 md:w-9 h-[88%] bg-gradient-to-l from-[#FF8F00] via-[#FFB300] to-[#FFD54F] -z-10 shadow-md"
+                className="hidden sm:block absolute -right-5 sm:-right-7 top-1 w-5 sm:w-7 h-[85%] bg-gradient-to-l from-[#FF8F00] via-[#FFB300] to-[#FFD54F] -z-10 shadow-md"
                 style={{ clipPath: 'polygon(0% 0%, 100% 0%, 70% 50%, 100% 100%, 0% 100%)' }}
               />
             </div>
 
-            {/* Row 2: Teacher Photo + 3D Word Art Title (40–50% Larger) + Decorative Mini Planet */}
-            <div className="flex items-center justify-center gap-2.5 sm:gap-4 my-0.5 sm:my-1 max-w-full px-1">
+            {/* Row 2: Teacher Photo + 3D Word Art Title + Decorative Mini Planet */}
+            <div className="flex items-center justify-center gap-2 sm:gap-3 my-0.5 max-w-full px-1">
               <img
                 src="./ms-trang.jpg"
                 alt="Ms. Trang"
-                className="h-10 w-10 sm:h-12 sm:w-12 md:h-14 md:w-14 lg:h-16 lg:w-16 aspect-square object-cover rounded-xl sm:rounded-2xl border-2 sm:border-3 border-[#FFD600] shadow-[0_0_18px_rgba(255,214,0,0.55)] flex-shrink-0"
+                className="h-9 w-9 sm:h-11 sm:w-11 md:h-12 md:w-12 lg:h-13 lg:w-13 aspect-square object-cover rounded-xl sm:rounded-2xl border-2 sm:border-3 border-[#FFD600] shadow-[0_0_15px_rgba(255,214,0,0.5)] flex-shrink-0"
               />
               
               <div className="relative">
-                <h1 className="wordart-galaxy text-xl sm:text-2xl md:text-3xl lg:text-[32px] xl:text-[36px] 2xl:text-[40px] leading-tight text-center sm:text-left whitespace-nowrap font-black tracking-tight">
+                <h1 className="wordart-galaxy text-lg sm:text-xl md:text-2xl lg:text-[28px] xl:text-[32px] 2xl:text-[34px] leading-tight text-center sm:text-left whitespace-nowrap font-black tracking-tight">
                   Ms. Trang's English Classes
                 </h1>
                 
                 {/* Decorative Mini Saturn Planet near heading */}
-                <div className="absolute -top-3 -right-6 sm:-top-4 sm:-right-8 pointer-events-none">
-                  <svg className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 drop-shadow-[0_0_10px_#00D9F5]" viewBox="0 0 40 40" fill="none">
+                <div className="absolute -top-2.5 -right-5 sm:-top-3.5 sm:-right-7 pointer-events-none">
+                  <svg className="w-5 h-5 sm:w-6 sm:h-6 drop-shadow-[0_0_8px_#00D9F5]" viewBox="0 0 40 40" fill="none">
                     <ellipse cx="20" cy="20" rx="17" ry="6" transform="rotate(-20 20 20)" stroke="#00D9F5" strokeWidth="2.5" />
                     <circle cx="20" cy="20" r="10" fill="#FF4F91" />
                     <circle cx="17" cy="17" r="3" fill="#FFF" opacity="0.5" />
@@ -527,7 +535,7 @@ export function App() {
             </div>
 
             {/* Row 3: Subtitle badge */}
-            <div className="mt-0.5 inline-flex items-center gap-1.5 bg-[#12092E]/90 border border-[#7C4DFF] text-[#E0E7FF] px-3.5 py-0.5 sm:py-1 rounded-full text-[11px] sm:text-xs md:text-sm font-black shadow-[0_0_8px_rgba(124,77,255,0.4)]">
+            <div className="mt-0.5 inline-flex items-center gap-1.5 bg-[#12092E]/90 border border-[#7C4DFF] text-[#E0E7FF] px-3 py-0.5 rounded-full text-[10px] sm:text-xs font-black shadow-[0_0_8px_rgba(124,77,255,0.4)]">
               <span className="text-[#FFD600] animate-pulse">⭐</span>
               <span className="text-[#00D9F5] uppercase tracking-wide">Lucky Class Picker Wheel</span>
               <span className="text-[#FFD600] animate-pulse">⭐</span>
@@ -535,7 +543,7 @@ export function App() {
           </div>
 
           {/* Audio Toggle & Manage Classes Toolbar */}
-          <div className="mt-1.5 lg:mt-0 lg:absolute lg:top-3 lg:right-4 flex items-center gap-1.5 sm:gap-2">
+          <div className="mt-1.5 lg:mt-0 lg:absolute lg:top-2.5 lg:right-4 flex items-center gap-1.5 sm:gap-2">
             <CuteButton
               color="cream"
               size="sm"
@@ -573,7 +581,7 @@ export function App() {
           - Left: Galaxy Lucky Wheel (25-30% larger) + SPIN NOW Button (20% larger)
           - Right: Cosmic Glass Selected Class Card + Badges (40% larger)
           ======================================================== */}
-      <main className="flex-1 min-h-0 max-w-[1560px] w-full mx-auto px-3 sm:px-5 lg:px-7 py-1 sm:py-1.5 flex flex-col justify-center relative z-10">
+      <main className="flex-1 min-h-0 max-w-[1440px] w-full mx-auto px-3 sm:px-5 lg:px-6 py-1 sm:py-1.5 flex flex-col justify-center relative z-10">
         
         {classes.length === 0 ? (
           /* Empty Onboarding State: No classes added */
@@ -634,19 +642,19 @@ export function App() {
                 />
               </div>
 
-              {/* SPIN NOW! Galaxy Power Button (Enlarged by 20%) */}
-              <div className="mt-2 sm:mt-2.5 lg:mt-3 flex flex-col items-center gap-1.5 flex-shrink-0">
+              {/* SPIN NOW! Galaxy Power Button */}
+              <div className="mt-1.5 sm:mt-2 lg:mt-2.5 flex flex-col items-center gap-1 flex-shrink-0">
                 <CuteButton
                   color="spin"
                   size="xl"
                   disabled={!canSpin}
                   onClick={handleStartSpin}
-                  className="py-3 sm:py-3.5 lg:py-4 px-10 sm:px-14 lg:px-16 text-2xl sm:text-3xl font-black shadow-[0_0_30px_rgba(255,145,0,0.55)] active:scale-95 transition-all"
+                  className="py-2.5 sm:py-3 px-8 sm:px-12 lg:px-14 text-xl sm:text-2xl font-black shadow-[0_0_24px_rgba(255,145,0,0.55)] active:scale-95 transition-all"
                   icon={
                     isSpinning ? (
-                      <Sparkles className="w-7 h-7 sm:w-8 sm:h-8 animate-spin text-white" />
+                      <Sparkles className="w-6 h-6 sm:w-7 sm:h-7 animate-spin text-white" />
                     ) : (
-                      <Play className="w-7 h-7 sm:w-8 sm:h-8 fill-white text-white" />
+                      <Play className="w-6 h-6 sm:w-7 sm:h-7 fill-white text-white" />
                     )
                   }
                 >
@@ -654,13 +662,13 @@ export function App() {
                 </CuteButton>
 
                 {/* Sub-label showing wheel status */}
-                <div className="flex items-center gap-2 text-xs font-black text-[#00D9F5]">
+                <div className="flex items-center gap-2 text-[11px] sm:text-xs font-black text-[#00D9F5]">
                   <span>Showing {classNames.length} classes on wheel</span>
                   {unwonEligibleClasses.length > 10 && (
                     <button
                       onClick={handleRotateWheelGroup}
                       disabled={isSpinning}
-                      className="inline-flex items-center gap-1 text-[11px] bg-[#12092E] border border-[#00D9F5]/50 px-2.5 py-0.5 rounded-full hover:bg-[#1A0E3C] text-[#FFD600] transition-colors cursor-pointer"
+                      className="inline-flex items-center gap-1 text-[10px] sm:text-[11px] bg-[#12092E] border border-[#00D9F5]/50 px-2 py-0.5 rounded-full hover:bg-[#1A0E3C] text-[#FFD600] transition-colors cursor-pointer"
                       title="Rotate to next group of 10 classes"
                     >
                       <RotateCw className="w-3 h-3" /> Rotate Group
