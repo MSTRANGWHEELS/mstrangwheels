@@ -30,7 +30,7 @@ interface ClassManagerModalProps {
   onClose: () => void;
   classes: ClassItem[];
   selectedClassId: string | null;
-  roundNumber: number;
+  roundNumber?: number;
   wonClassIds: string[];
   validationMap: Record<string, PhotoValidationStatus>;
   onSaveClass: (cls: ClassItem) => void;
@@ -44,7 +44,7 @@ export const ClassManagerModal: React.FC<ClassManagerModalProps> = ({
   onClose,
   classes,
   selectedClassId,
-  roundNumber,
+  roundNumber: _roundNumber,
   wonClassIds,
   validationMap,
   onSaveClass,
@@ -228,7 +228,7 @@ export const ClassManagerModal: React.FC<ClassManagerModalProps> = ({
   const handleConfirmResetRound = () => {
     if (
       window.confirm(
-        `Reset current Round ${roundNumber}? This will clear all completed winners and allow all eligible classes to win again.`
+        'Reset winner selection progress? This will allow all eligible classes to be selected again.'
       )
     ) {
       onResetRound();
@@ -260,10 +260,10 @@ export const ClassManagerModal: React.FC<ClassManagerModalProps> = ({
               size="sm"
               onClick={handleConfirmResetRound}
               icon={<RotateCcw className="w-3.5 h-3.5" />}
-              title="Reset winner progress and start a fresh round"
+              title="Reset winner progress so all classes can win again"
               className="py-1 px-3 text-xs"
             >
-              Reset Round {roundNumber}
+              Reset Winners
             </CuteButton>
 
             <button
@@ -328,7 +328,7 @@ export const ClassManagerModal: React.FC<ClassManagerModalProps> = ({
           </div>
           <div className="flex items-center gap-2">
             <span className="bg-[#7C4DFF]/40 text-[#E0E7FF] font-bold px-2 py-0.5 rounded-full border border-[#7C4DFF]">
-              Round {roundNumber}: {wonClassesCount}/{eligibleClasses.length} Won
+              Selected: {wonClassesCount}/{eligibleClasses.length}
             </span>
           </div>
         </div>
@@ -432,10 +432,10 @@ export const ClassManagerModal: React.FC<ClassManagerModalProps> = ({
                                 </span>
                               )}
 
-                              {/* Round Winner Status */}
+                              {/* Winner Status */}
                               {hasWon && (
                                 <span className="bg-[#FFD600]/20 text-[#FFD600] border border-[#FFD600]/50 text-[10px] px-2 py-0.5 rounded-full font-black flex items-center gap-1">
-                                  <Trophy className="w-3 h-3" /> WON ROUND {roundNumber}
+                                  <Trophy className="w-3 h-3" /> SELECTED WINNER
                                 </span>
                               )}
                             </div>

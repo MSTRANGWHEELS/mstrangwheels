@@ -270,13 +270,13 @@ export const WheelCanvas: React.FC<WheelCanvasProps> = ({
 
     // =========================================================================
     // LAYER 2: CLASS LABELS – ALWAYS HORIZONTAL, 100% UPRIGHT, EXTRA-BOLD, HIGH CONTRAST
-    // With Super Winner Zoom, glowing golden outline, sparkling stars & dimmed non-winners
+    // Enlarged by 20–25% for high visibility from classroom distance & screens
     // =========================================================================
     const rLabel = innerRadius + (wheelRadius - innerRadius) * 0.54;
     const baseScale = size / 480;
 
-    // Dynamic base font size: 72px for 1-6 segments, 56px for 7-8 segments, 46px for 9-10 segments
-    const baseTargetFontSize = Math.floor((count >= 9 ? 46 : count >= 7 ? 56 : 72) * baseScale);
+    // Enlarged base font size (22-25% increase): 88px for 1-6 segments, 68px for 7-8 segments, 56px for 9-10 segments
+    const baseTargetFontSize = Math.floor((count >= 9 ? 56 : count >= 7 ? 68 : 88) * baseScale);
 
     for (let i = 0; i < count; i++) {
       const sliceMid = (i + 0.5) * segmentAngle;
@@ -301,23 +301,23 @@ export const WheelCanvas: React.FC<WheelCanvasProps> = ({
 
       // Dim non-winning class labels when spotlight is active
       if (!isWinner && (activeSpotlight || dimOtherLabels)) {
-        ctx.globalAlpha = 0.45;
+        ctx.globalAlpha = 0.42;
       } else {
         ctx.globalAlpha = 1.0;
       }
 
-      // Usable width: ~88% of segment arc width
-      const usableWidth = rLabel * segmentAngle * 0.88;
+      // Usable width: ~92% of segment arc width
+      const usableWidth = rLabel * segmentAngle * 0.92;
 
       let fontSize = baseTargetFontSize;
 
       if (isWinner && activeSpotlight) {
-        // Enlarge winning class number approximately 1.5–1.8 times (1.65x)
-        fontSize = Math.floor(baseTargetFontSize * 1.65);
+        // Enlarge winning class number approximately 1.5–1.7x
+        fontSize = Math.floor(baseTargetFontSize * 1.55);
       }
 
       ctx.font = `900 ${fontSize}px "Nunito", "Quicksand", Arial, sans-serif`;
-      while (ctx.measureText(displayNumber).width > usableWidth && fontSize > (isSmall ? 10 : 16)) {
+      while (ctx.measureText(displayNumber).width > usableWidth && fontSize > (isSmall ? 12 : 20)) {
         fontSize -= 2;
         ctx.font = `900 ${fontSize}px "Nunito", "Quicksand", Arial, sans-serif`;
       }

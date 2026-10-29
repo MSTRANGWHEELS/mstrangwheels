@@ -122,8 +122,8 @@ export function App() {
 
       addToast({
         type: 'success',
-        title: `🎉 Round ${roundData.roundNumber} Complete!`,
-        message: `All ${eligibleClasses.length} eligible classes have won! Starting Round ${nextRound}...`,
+        title: '🎉 All Eligible Classes Have Won!',
+        message: `All ${eligibleClasses.length} eligible classes have been selected! Ready to spin again...`,
       });
 
       confetti({
@@ -333,8 +333,8 @@ export function App() {
     setSelectedClassId(null);
     addToast({
       type: 'info',
-      title: 'Winner Round Reset',
-      message: `Round ${roundData.roundNumber} progress reset. All eligible classes are ready to win again.`,
+      title: 'Winner Progress Reset',
+      message: 'Selection progress reset. All eligible classes are ready to win again.',
     });
   };
 
@@ -415,26 +415,26 @@ export function App() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Compute dynamic responsive wheel size
+  // Compute dynamic responsive wheel size (25–30% larger whenever viewport permits)
   const responsiveWheelSize = useMemo(() => {
     const isDesktop = viewportSize.width >= 1024;
     if (!isDesktop) {
       // Mobile / Tablet portrait: width-constrained
-      const maxWidth = Math.min(viewportSize.width - 32, 400);
-      const maxHeight = viewportSize.height * 0.44;
-      return Math.max(260, Math.min(maxWidth, maxHeight, 370));
+      const maxWidth = Math.min(viewportSize.width - 24, 460);
+      const maxHeight = viewportSize.height * 0.48;
+      return Math.max(280, Math.min(maxWidth, maxHeight, 430));
     }
 
-    // Desktop / Laptop: height-constrained to fit 100% inside 100dvh without scroll
-    // Overhead reserved: Header ~105px, Footer ~26px, SPIN NOW button & labels ~85px, Paddings ~26px
+    // Desktop / Laptop: 25–30% larger wheel!
+    // Overhead reserved: Header ~105px, Footer ~24px, SPIN NOW button & labels ~88px, Paddings ~25px
     // Total vertical reserved space outside wheel: ~242px
-    const availableVerticalForWheel = viewportSize.height - 245;
-    // Left column is 7/12th of container width (max 1360px)
-    const availableHorizontalForWheel = (Math.min(viewportSize.width, 1360) * 0.58) - 40;
+    const availableVerticalForWheel = viewportSize.height - 242;
+    // Left column takes ~54% of max-w-[1560px]
+    const availableHorizontalForWheel = (Math.min(viewportSize.width, 1560) * 0.54) - 36;
 
     const calculated = Math.min(availableVerticalForWheel, availableHorizontalForWheel);
-    // Smoothly clamp between 280px (for 1024x720/768) and 460px (for 1920x1080)
-    return Math.max(280, Math.min(460, Math.round(calculated)));
+    // 25–30% larger: Up to 560px on 1080p, 510px on 900p, 430px on 768p, 400px on 720p!
+    return Math.max(300, Math.min(560, Math.round(calculated)));
   }, [viewportSize.width, viewportSize.height]);
 
   const canSpin = !isSpinning && classNames.length > 0;
@@ -563,10 +563,10 @@ export function App() {
 
       {/* ========================================================
           2. MAIN CONTENT AREA
-          - Left: Galaxy Lucky Wheel (Centerpiece, max 10 segments) + SPIN NOW Button
-          - Right: Cosmic Glass Selected Class Card + Badges
+          - Left: Galaxy Lucky Wheel (25-30% larger) + SPIN NOW Button (20% larger)
+          - Right: Cosmic Glass Selected Class Card + Badges (40% larger)
           ======================================================== */}
-      <main className="flex-1 min-h-0 max-w-7xl w-full mx-auto px-3 sm:px-4 py-1 sm:py-1.5 flex flex-col justify-center relative z-10">
+      <main className="flex-1 min-h-0 max-w-[1560px] w-full mx-auto px-3 sm:px-5 lg:px-7 py-1 sm:py-1.5 flex flex-col justify-center relative z-10">
         
         {classes.length === 0 ? (
           /* Empty Onboarding State: No classes added */
@@ -611,12 +611,12 @@ export function App() {
             </CuteButton>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-4 lg:gap-6 items-center w-full min-h-0">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 xl:gap-8 items-center w-full min-h-0">
             
-            {/* CỘT TRÁI (Centerpiece Wheel + Galaxy Power Button) */}
-            <div className="lg:col-span-7 xl:col-span-8 flex flex-col items-center justify-center w-full py-0.5 min-h-0">
+            {/* CỘT TRÁI (Centerpiece Wheel + Galaxy Power Button) – ~54% width */}
+            <div className="lg:col-span-7 xl:col-span-7 flex flex-col items-center justify-center w-full py-0.5 min-h-0">
               
-              {/* Vòng quay Galaxy Lucky Wheel: Dynamically responsive */}
+              {/* Vòng quay Galaxy Lucky Wheel: 25-30% larger centerpiece */}
               <div className="relative w-full flex justify-center items-center">
                 <WheelCanvas
                   items={classNames}
@@ -627,19 +627,19 @@ export function App() {
                 />
               </div>
 
-              {/* SPIN NOW! Galaxy Power Button + Multi-Group Rotation indicator */}
-              <div className="mt-2 sm:mt-2.5 flex flex-col items-center gap-1.5 flex-shrink-0">
+              {/* SPIN NOW! Galaxy Power Button (Enlarged by 20%) */}
+              <div className="mt-2 sm:mt-2.5 lg:mt-3 flex flex-col items-center gap-1.5 flex-shrink-0">
                 <CuteButton
                   color="spin"
-                  size="lg"
+                  size="xl"
                   disabled={!canSpin}
                   onClick={handleStartSpin}
-                  className="py-2.5 sm:py-3 px-8 sm:px-12 text-xl sm:text-2xl shadow-[0_0_25px_rgba(255,145,0,0.5)]"
+                  className="py-3 sm:py-3.5 lg:py-4 px-10 sm:px-14 lg:px-16 text-2xl sm:text-3xl font-black shadow-[0_0_30px_rgba(255,145,0,0.55)] active:scale-95 transition-all"
                   icon={
                     isSpinning ? (
-                      <Sparkles className="w-6 h-6 animate-spin text-white" />
+                      <Sparkles className="w-7 h-7 sm:w-8 sm:h-8 animate-spin text-white" />
                     ) : (
-                      <Play className="w-6 h-6 fill-white text-white" />
+                      <Play className="w-7 h-7 sm:w-8 sm:h-8 fill-white text-white" />
                     )
                   }
                 >
@@ -647,16 +647,16 @@ export function App() {
                 </CuteButton>
 
                 {/* Sub-label showing wheel status */}
-                <div className="flex items-center gap-2 text-[11px] sm:text-xs font-black text-[#00D9F5]">
+                <div className="flex items-center gap-2 text-xs font-black text-[#00D9F5]">
                   <span>Showing {classNames.length} classes on wheel</span>
                   {unwonEligibleClasses.length > 10 && (
                     <button
                       onClick={handleRotateWheelGroup}
                       disabled={isSpinning}
-                      className="inline-flex items-center gap-1 text-[10px] bg-[#12092E] border border-[#00D9F5]/50 px-2 py-0.5 rounded-full hover:bg-[#1A0E3C] text-[#FFD600] transition-colors cursor-pointer"
+                      className="inline-flex items-center gap-1 text-[11px] bg-[#12092E] border border-[#00D9F5]/50 px-2.5 py-0.5 rounded-full hover:bg-[#1A0E3C] text-[#FFD600] transition-colors cursor-pointer"
                       title="Rotate to next group of 10 classes"
                     >
-                      <RotateCw className="w-2.5 h-2.5" /> Rotate Group
+                      <RotateCw className="w-3 h-3" /> Rotate Group
                     </button>
                   )}
                 </div>
@@ -664,14 +664,13 @@ export function App() {
 
             </div>
 
-            {/* CỘT PHẢI: Selected Class Card & Participating Classes */}
-            <div className="lg:col-span-5 xl:col-span-4 flex flex-col justify-center w-full mt-2 lg:mt-0 min-h-0">
+            {/* CỘT PHẢI: Selected Class Card & Participating Classes – ~46% width, ~40% larger */}
+            <div className="lg:col-span-5 xl:col-span-5 flex flex-col justify-center w-full mt-2 lg:mt-0 min-h-0">
               <ClassResultCard
                 selectedClass={selectedClass}
                 classes={classes}
                 activeWheelClasses={currentWheelClasses}
                 wonClassIds={roundData.wonClassIds}
-                roundNumber={roundData.roundNumber}
                 validationMap={validationMap}
                 isSpinning={isSpinning}
                 isSpotlightActive={isSpotlightActive}
@@ -687,11 +686,11 @@ export function App() {
       </main>
 
       {/* ========================================================
-          3. FOOTER
+          3. FOOTER – Clean School Branding (No Round Text)
           ======================================================== */}
       <footer className="py-0.5 sm:py-1 px-4 text-center flex-shrink-0 z-10">
-        <div className="inline-block bg-[#160E36]/80 backdrop-blur-sm px-3 sm:px-4 py-0.5 rounded-full border border-[#7C4DFF]/50 text-[10px] sm:text-[11px] font-black text-[#B388FF] shadow-[0_0_8px_rgba(124,77,255,0.3)]">
-          Trang Tấn Khương Primary School • Round {roundData.roundNumber} In Progress • Ms. Trang's English Classes
+        <div className="inline-block bg-[#160E36]/80 backdrop-blur-sm px-4 py-0.5 rounded-full border border-[#7C4DFF]/50 text-[10px] sm:text-[11px] font-black text-[#B388FF] shadow-[0_0_8px_rgba(124,77,255,0.3)]">
+          Trang Tấn Khương Primary School • Ms. Trang's English Classes • Lucky Class Picker Wheel
         </div>
       </footer>
 
