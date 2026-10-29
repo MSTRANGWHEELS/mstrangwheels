@@ -467,66 +467,67 @@ export function App() {
 
       {/* ========================================================
           1. HEADER: COMPACT, PROPORTIONAL 3D TITLES & TEACHER PHOTO
-          - Row 1: Premium 3D Golden Ribbon School Name Banner
-          - Row 2: Teacher Photo + Ms. Trang's English Classes (3D Word Art) + Decorative Mini Planet
-          - Row 3: ⭐ Lucky Class Picker Wheel
+          - 25-30% narrower dark-purple container (max-w-[800px] vs 1152px)
+          - 15-20% shorter height (~110px vs 140px)
+          - Proportional shortened golden ribbon
+          - Clear side buttons without title overlapping
           ======================================================== */}
-      <header className="pt-1 sm:pt-1.5 pb-0.5 px-3 sm:px-6 relative flex-shrink-0 z-10">
-        <div className="max-w-6xl w-full mx-auto galaxy-card rounded-2xl sm:rounded-3xl px-3 py-1 sm:px-5 sm:py-1.5 relative flex flex-col items-center">
+      <header className="pt-0.5 sm:pt-1 pb-0.5 px-2 sm:px-4 relative flex-shrink-0 z-10">
+        <div className="max-w-[760px] lg:max-w-[800px] xl:max-w-[820px] w-full mx-auto galaxy-card rounded-2xl sm:rounded-3xl px-3 py-1 sm:px-4 sm:py-1 relative flex flex-col items-center">
           
-          {/* Centered 3-Row Header (80-90% available width, ~13-16% viewport height) */}
-          <div className="text-center w-full max-w-3xl xl:max-w-4xl mx-auto px-1 sm:px-3 flex flex-col items-center">
+          {/* Centered 3-Row Header Content */}
+          <div className="text-center w-full max-w-2xl mx-auto px-1 flex flex-col items-center">
             
-            {/* Row 1: Premium 3D Golden Ribbon School Name Banner */}
+            {/* Row 1: Premium 3D Golden Ribbon School Name Banner (Shortened & Proportional) */}
             <div className="relative inline-flex items-center justify-center my-0.5 select-none max-w-full">
               {/* Left Ribbon Wing */}
               <div
-                className="hidden sm:block absolute -left-5 sm:-left-7 top-1 w-5 sm:w-7 h-[85%] bg-gradient-to-r from-[#FF8F00] via-[#FFB300] to-[#FFD54F] -z-10 shadow-md"
+                className="hidden sm:block absolute -left-3.5 sm:-left-4.5 top-0.5 w-3.5 sm:w-4.5 h-[85%] bg-gradient-to-r from-[#FF8F00] via-[#FFB300] to-[#FFD54F] -z-10 shadow-sm"
                 style={{ clipPath: 'polygon(100% 0%, 0% 0%, 30% 50%, 0% 100%, 100% 100%)' }}
               />
               {/* Left Underfold Shadow Triangle */}
-              <div className="hidden sm:block absolute -left-1.5 top-full -mt-2 w-0 h-0 border-t-[8px] sm:border-t-[10px] border-t-[#8D4B00] border-l-[6px] border-l-transparent -z-10" />
+              <div className="hidden sm:block absolute -left-1 top-full -mt-1.5 w-0 h-0 border-t-[6px] sm:border-t-[7px] border-t-[#8D4B00] border-l-[4px] border-l-transparent -z-10" />
 
               {/* Main Golden Ribbon Body */}
-              <div className="ribbon-golden-3d relative px-4 sm:px-6 md:px-8 py-0.5 sm:py-1 rounded-sm sm:rounded-md flex items-center justify-center gap-1.5 sm:gap-2">
+              <div className="ribbon-golden-3d relative px-3 sm:px-4 md:px-5 py-0.5 rounded-sm sm:rounded flex items-center justify-center gap-1 sm:gap-1.5">
                 <div className="pointer-events-none absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/60 to-transparent rounded-t-[inherit]" />
 
-                <span className="text-xs sm:text-sm animate-pulse drop-shadow-[0_0_6px_#FF8F00]">✨</span>
+                <span className="text-[11px] sm:text-xs animate-pulse drop-shadow-[0_0_6px_#FF8F00]">✨</span>
 
                 {/* Exact School Name in Deep Red Bold Italic Lettering */}
-                <span className="ribbon-text-red uppercase tracking-wider text-xs sm:text-sm md:text-base lg:text-[18px] xl:text-[20px] 2xl:text-[22px] whitespace-nowrap font-black">
+                <span className="ribbon-text-red uppercase tracking-wider text-xs sm:text-[13px] md:text-sm lg:text-[15px] xl:text-[16px] whitespace-nowrap font-black">
                   TRANG TẤN KHƯƠNG PRIMARY SCHOOL
                 </span>
 
-                <span className="text-xs sm:text-sm animate-pulse drop-shadow-[0_0_6px_#FF8F00]">✨</span>
+                <span className="text-[11px] sm:text-xs animate-pulse drop-shadow-[0_0_6px_#FF8F00]">✨</span>
               </div>
 
               {/* Right Underfold Shadow Triangle */}
-              <div className="hidden sm:block absolute -right-1.5 top-full -mt-2 w-0 h-0 border-t-[8px] sm:border-t-[10px] border-t-[#8D4B00] border-r-[6px] border-r-transparent -z-10" />
+              <div className="hidden sm:block absolute -right-1 top-full -mt-1.5 w-0 h-0 border-t-[6px] sm:border-t-[7px] border-t-[#8D4B00] border-r-[4px] border-r-transparent -z-10" />
               {/* Right Ribbon Wing */}
               <div
-                className="hidden sm:block absolute -right-5 sm:-right-7 top-1 w-5 sm:w-7 h-[85%] bg-gradient-to-l from-[#FF8F00] via-[#FFB300] to-[#FFD54F] -z-10 shadow-md"
+                className="hidden sm:block absolute -right-3.5 sm:-right-4.5 top-0.5 w-3.5 sm:w-4.5 h-[85%] bg-gradient-to-l from-[#FF8F00] via-[#FFB300] to-[#FFD54F] -z-10 shadow-sm"
                 style={{ clipPath: 'polygon(0% 0%, 100% 0%, 70% 50%, 100% 100%, 0% 100%)' }}
               />
             </div>
 
             {/* Row 2: Teacher Photo + 3D Word Art Title + Decorative Mini Planet */}
-            <div className="flex items-center justify-center gap-2 sm:gap-3 my-0.5 max-w-full px-1">
+            <div className="flex items-center justify-center gap-2 sm:gap-2.5 my-0.5 max-w-full px-1">
               <img
                 src="./ms-trang.jpg"
                 alt="Ms. Trang"
-                className="h-9 w-9 sm:h-11 sm:w-11 md:h-12 md:w-12 lg:h-13 lg:w-13 aspect-square object-cover rounded-xl sm:rounded-2xl border-2 sm:border-3 border-[#FFD600] shadow-[0_0_15px_rgba(255,214,0,0.5)] flex-shrink-0"
+                className="h-8 w-8 sm:h-9 sm:w-9 md:h-10 md:w-10 lg:h-11 lg:w-11 aspect-square object-cover rounded-xl sm:rounded-2xl border-2 border-[#FFD600] shadow-[0_0_12px_rgba(255,214,0,0.5)] flex-shrink-0"
               />
               
               <div className="relative">
-                <h1 className="wordart-galaxy text-lg sm:text-xl md:text-2xl lg:text-[28px] xl:text-[32px] 2xl:text-[34px] leading-tight text-center sm:text-left whitespace-nowrap font-black tracking-tight">
+                <h1 className="wordart-galaxy text-base sm:text-lg md:text-xl lg:text-[23px] xl:text-[25px] leading-tight text-center sm:text-left whitespace-nowrap font-black tracking-tight">
                   Ms. Trang's English Classes
                 </h1>
                 
                 {/* Decorative Mini Saturn Planet near heading */}
-                <div className="absolute -top-2.5 -right-5 sm:-top-3.5 sm:-right-7 pointer-events-none">
-                  <svg className="w-5 h-5 sm:w-6 sm:h-6 drop-shadow-[0_0_8px_#00D9F5]" viewBox="0 0 40 40" fill="none">
-                    <ellipse cx="20" cy="20" rx="17" ry="6" transform="rotate(-20 20 20)" stroke="#00D9F5" strokeWidth="2.5" />
+                <div className="absolute -top-2 -right-4 sm:-top-2.5 sm:-right-5 pointer-events-none">
+                  <svg className="w-4 h-4 sm:w-5 sm:h-5 drop-shadow-[0_0_8px_#00D9F5]" viewBox="0 0 40 40" fill="none">
+                    <ellipse cx="20" cy="20" rx="17" ry="6" transform="rotate(-20 20 20)" stroke="#00D9F5" strokeWidth="2" />
                     <circle cx="20" cy="20" r="10" fill="#FF4F91" />
                     <circle cx="17" cy="17" r="3" fill="#FFF" opacity="0.5" />
                   </svg>
@@ -535,15 +536,15 @@ export function App() {
             </div>
 
             {/* Row 3: Subtitle badge */}
-            <div className="mt-0.5 inline-flex items-center gap-1.5 bg-[#12092E]/90 border border-[#7C4DFF] text-[#E0E7FF] px-3 py-0.5 rounded-full text-[10px] sm:text-xs font-black shadow-[0_0_8px_rgba(124,77,255,0.4)]">
+            <div className="mt-0.5 inline-flex items-center gap-1 bg-[#12092E]/90 border border-[#7C4DFF] text-[#E0E7FF] px-2.5 py-0.5 rounded-full text-[9px] sm:text-[10px] md:text-[11px] font-black shadow-[0_0_8px_rgba(124,77,255,0.4)]">
               <span className="text-[#FFD600] animate-pulse">⭐</span>
               <span className="text-[#00D9F5] uppercase tracking-wide">Lucky Class Picker Wheel</span>
               <span className="text-[#FFD600] animate-pulse">⭐</span>
             </div>
           </div>
 
-          {/* Audio Toggle & Manage Classes Toolbar */}
-          <div className="mt-1.5 lg:mt-0 lg:absolute lg:top-2.5 lg:right-4 flex items-center gap-1.5 sm:gap-2">
+          {/* Audio Toggle & Manage Classes Toolbar (Stacked vertically on right for clean clearance) */}
+          <div className="mt-1 sm:mt-0 sm:absolute sm:top-1/2 sm:-translate-y-1/2 sm:right-3 flex flex-row sm:flex-col items-center gap-1">
             <CuteButton
               color="cream"
               size="sm"
@@ -554,9 +555,9 @@ export function App() {
                 setBgmEnabled(next);
                 if (!next) stopVoice();
               }}
-              icon={soundEnabled ? <Volume2 className="w-3.5 h-3.5 text-[#00D9F5]" /> : <VolumeX className="w-3.5 h-3.5 text-white/50" />}
+              icon={soundEnabled ? <Volume2 className="w-3 h-3 text-[#00D9F5]" /> : <VolumeX className="w-3 h-3 text-white/50" />}
               title={soundEnabled ? 'Music, sound effects & AI MC Voice ON' : 'Audio MUTED'}
-              className="py-1 px-2.5 text-xs rounded-xl"
+              className="py-0.5 px-2 text-[11px] rounded-lg"
             >
               {soundEnabled ? 'Voice ON' : 'Muted'}
             </CuteButton>
@@ -566,8 +567,8 @@ export function App() {
               size="sm"
               disabled={isSpinning}
               onClick={() => setIsManagerOpen(true)}
-              icon={<Settings className="w-3.5 h-3.5 text-[#FFD600]" />}
-              className="py-1 px-2.5 text-xs rounded-xl"
+              icon={<Settings className="w-3 h-3 text-[#FFD600]" />}
+              className="py-0.5 px-2 text-[11px] rounded-lg"
             >
               Manage
             </CuteButton>
