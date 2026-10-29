@@ -21,26 +21,30 @@
 /* ========================================================
    PREMIUM 3D GOLDEN RIBBON BANNER FOR SCHOOL NAME
    - Glossy Golden-Yellow Gradient
-   - Deep Red (#C62828) Bold Italic Lettering
+   - Deep Red (#B71C1C) Bold Italic Lettering
    - Subtle 3D Text Shadow & Golden Highlights
    ======================================================== */
 .ribbon-golden-3d {
   background: linear-gradient(180deg, #FFFDE7 0%, #FFF176 18%, #FFD54F 45%, #FFB300 75%, #FF8F00 100%);
   box-shadow:
-    0 4px 15px rgba(255, 214, 0, 0.45),
-    0 2px 6px rgba(0, 0, 0, 0.35);
-  border-top: 2px solid #FFFDE7;
-  border-bottom: 2px solid #FF8F00;
+    0 4px 18px rgba(255, 214, 0, 0.55),
+    0 2px 8px rgba(0, 0, 0, 0.4),
+    inset 0 1px 1.5px rgba(255, 255, 255, 0.85),
+    inset 0 -2px 3px rgba(183, 28, 28, 0.25);
+  border-top: 2.5px solid #FFFDE7;
+  border-bottom: 2.5px solid #FF8F00;
 }
 
 .ribbon-text-red {
-  color: #C62828;
+  color: #B71C1C;
   font-family: "Nunito", "Quicksand", system-ui, sans-serif;
   font-weight: 900;
   font-style: italic;
   text-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.85),
-    0 2px 4px rgba(136, 14, 79, 0.4);
+    0 1px 0 rgba(255, 255, 255, 0.9),
+    0 2px 4px rgba(136, 14, 79, 0.5),
+    0 0 12px rgba(255, 215, 0, 0.4);
+  letter-spacing: 0.04em;
 }
 
 /* ========================================================
@@ -53,7 +57,7 @@
   font-family: "Nunito", "Fredoka", "Quicksand", system-ui, sans-serif;
   font-weight: 900;
   color: #FFD600;
-  background: linear-gradient(180deg, #FFF59D 0%, #FFD600 30%, #FF9100 65%, #FF3D00 100%);
+  background: linear-gradient(180deg, #FFF9C4 0%, #FFD600 28%, #FF9100 60%, #FF3D00 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   filter:
@@ -63,7 +67,7 @@
     drop-shadow(-2px 0 0 #FFFFFF)
     drop-shadow(0 4px 0 #3E1068)
     drop-shadow(0 6px 0 #240545)
-    drop-shadow(0 10px 22px rgba(179, 136, 255, 0.65));
+    drop-shadow(0 10px 24px rgba(179, 136, 255, 0.75));
   letter-spacing: -0.01em;
 }
 
@@ -130,6 +134,103 @@
 
 .animate-pulse-gentle {
   animation: pulseGentle 3s ease-in-out infinite;
+}
+
+/* ========================================================
+   GENTLE 3D CARTOON FLOATING & ROTATION ANIMATIONS
+   - Floating distance: 6–12px
+   - Floating duration: 4–7s
+   - Rotation: 2–5 degrees
+   - Smooth ease-in-out infinite looping
+   ======================================================== */
+@keyframes floatGentlePlanet {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(3deg);
+  }
+}
+
+@keyframes floatGentleAstronaut {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  35% {
+    transform: translateY(-8px) rotate(-4deg);
+  }
+  70% {
+    transform: translateY(-12px) rotate(3deg);
+  }
+}
+
+@keyframes floatGentleRocket {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-9px) rotate(2.5deg);
+  }
+}
+
+@keyframes rotateGentleSun {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(180deg) scale(1.03);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
+}
+
+@keyframes twinkleStar {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.18);
+  }
+}
+
+@keyframes rockGentleBooks {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-7px) rotate(-3.5deg);
+  }
+}
+
+.animate-float-planet {
+  animation: floatGentlePlanet 5.5s ease-in-out infinite;
+}
+.animate-float-planet-alt {
+  animation: floatGentlePlanet 6.2s ease-in-out 1.2s infinite reverse;
+}
+.animate-float-astronaut {
+  animation: floatGentleAstronaut 6s ease-in-out 0.6s infinite;
+}
+.animate-float-rocket {
+  animation: floatGentleRocket 4.8s ease-in-out 1.5s infinite;
+}
+.animate-rotate-sun {
+  animation: rotateGentleSun 24s linear infinite;
+}
+.animate-twinkle-1 {
+  animation: twinkleStar 3s ease-in-out infinite;
+}
+.animate-twinkle-2 {
+  animation: twinkleStar 3.8s ease-in-out 1.2s infinite;
+}
+.animate-twinkle-3 {
+  animation: twinkleStar 2.6s ease-in-out 0.8s infinite;
+}
+.animate-rock-books {
+  animation: rockGentleBooks 5s ease-in-out infinite;
 }
 
 /* Custom fade-in animation for modals */

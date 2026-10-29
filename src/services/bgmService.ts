@@ -3,24 +3,28 @@
  *
  * Requirements:
  * - Exact audio track from Google Drive (id: 1QZjyCeASZroVKDK2fCvppVe6I4OnIGRy)
- * - Default music volume: 20% (0.20)
- * - Continuous looping (loop = true)
- * - Autoplay restriction handling with auto-unlock on first user interaction
- * - Continuous play: Keep playing across wheel spins and class photo modal
- * - Audio ducking: 8% (0.08) during female AI MC announcements, then smoothly restored to 20%
- * - Global audio control: Controlled by the Voice ON/OFF (soundEnabled) toggle
+ * - Wheel Screen Volume: 10% (0.10)
+ * - Photo Viewer Volume: 15% (0.15) with smooth 0.5s transition
+ * - AI MC Speech Ducking: 5% (0.05), restored to screen volume (10% or 15%)
+ * - Continuous looping without restarting across spins and photo viewer
+ * - Voice ON/OFF controls all application audio
  * - Strict Singleton: Prevents duplicate audio elements
  */
 
-export const DEFAULT_BGM_VOLUME = 0.20; // 20% default volume
-export const DUCKED_BGM_VOLUME = 0.08;  // 8% ducked volume during AI MC speech
+export const WHEEL_BGM_VOLUME = 0.10;        // 10% on main spinning wheel screen
+export const PHOTO_VIEWER_BGM_VOLUME = 0.15; // 15% in class photo viewer
+export const DUCKED_BGM_VOLUME = 0.05;       // 5% ducked volume during AI MC speech
+export const DEFAULT_BGM_VOLUME = WHEEL_BGM_VOLUME;
 export const BGM_AUDIO_SRC = './audio/bgm.mp3';
+
+export type BgmScreenMode = 'wheel' | 'photo';
 
 class BgmManager {
   private static instance: BgmManager | null = null;
   private audio: HTMLAudioElement | null = null;
   private isEnabled: boolean = true;
   private isDucked: boolean = false;
+  private currentScreen: BgmScreenMode = 'wheel';
   private hasUserUnlocked: boolean = false;
   private fadeInterval: ReturnType<typeof setInterval> | null = null;
   private unlockListenersAttached: boolean = false;
@@ -47,7 +51,7 @@ class BgmManager {
     if (!this.audio) {
       const audio = new Audio(BGM_AUDIO_SRC);
       audio.loop = true;
-      audio.volume = DEFAULT_BGM_VOLUME;
+      audio.volume = this.currentScreen === 'photo' ? PHOTO_VIEWER_BGM_VOLUME : WHEEL_BGM_VOLUME;
       audio.preload = 'auto';
       this.audio = audio;
 
@@ -66,6 +70,26 @@ class BgmManager {
     } else {
       this.audio.pause();
     }
+  }
+
+  /**
+   * Set screen mode ('wheel' = 10%, 'photo' = 15%) with smooth 0.5s fade
+   */
+  public setScreen(screen: BgmScreenMode, durationMs: number = 500): void {
+    this.currentScreen = screen;
+    if (!this.isEnabled || !this.audio) return;
+
+    if (!this.isDucked) {
+      const targetVolume = screen === 'photo' ? PHOTO_VIEWER_BGM_VOLUME : WHEEL_BGM_VOLUME;
+      this.fadeVolume(targetVolume, durationMs);
+    }
+  }
+
+  /**
+   * Get active screen mode
+   */
+  public getScreen(): BgmScreenMode {
+    return this.currentScreen;
   }
 
   /**
@@ -88,7 +112,9 @@ class BgmManager {
       }
       this.audio.pause();
     } else {
-      const targetVol = this.isDucked ? DUCKED_BGM_VOLUME : DEFAULT_BGM_VOLUME;
+      const targetVol = this.isDucked
+        ? DUCKED_BGM_VOLUME
+        : (this.currentScreen === 'photo' ? PHOTO_VIEWER_BGM_VOLUME : WHEEL_BGM_VOLUME);
       this.audio.volume = targetVol;
       this.play();
     }
@@ -129,7 +155,7 @@ class BgmManager {
   }
 
   /**
-   * Smoothly duck BGM to 8% (0.08) during AI MC voice announcement
+   * Smoothly duck BGM to 5% (0.05) during AI MC voice announcement
    */
   public duck(durationMs: number = 300): void {
     this.isDucked = true;
@@ -138,12 +164,13 @@ class BgmManager {
   }
 
   /**
-   * Smoothly restore BGM back to 20% (0.20) after AI MC voice announcement ends
+   * Smoothly restore BGM back to screen volume (10% on wheel, 15% in photo viewer)
    */
   public restore(durationMs: number = 400): void {
     this.isDucked = false;
     if (!this.isEnabled || !this.audio) return;
-    this.fadeVolume(DEFAULT_BGM_VOLUME, durationMs);
+    const targetVolume = this.currentScreen === 'photo' ? PHOTO_VIEWER_BGM_VOLUME : WHEEL_BGM_VOLUME;
+    this.fadeVolume(targetVolume, durationMs);
   }
 
   /**
@@ -221,6 +248,7 @@ class BgmManager {
       initialized: this.audio !== null,
       enabled: this.isEnabled,
       isDucked: this.isDucked,
+      currentScreen: this.currentScreen,
       isPlaying: this.audio ? !this.audio.paused : false,
       volume: this.audio ? Number(this.audio.volume.toFixed(3)) : 0,
       loop: this.audio ? this.audio.loop : false,
@@ -236,9 +264,15 @@ export const bgmService = BgmManager.getInstance();
 // Convenience helper functions
 export const initBgm = (enabled?: boolean) => bgmService.init(enabled);
 export const setBgmEnabled = (enabled: boolean) => bgmService.setEnabled(enabled);
+export const setBgmScreen = (screen: BgmScreenMode, durationMs?: number) => bgmService.setScreen(screen, durationMs);
 export const duckBgm = (durationMs?: number) => bgmService.duck(durationMs);
 export const restoreBgm = (durationMs?: number) => bgmService.restore(durationMs);
 export const getBgmState = () => bgmService.getState();
+
+// Attach to window in browser for runtime testing/diagnostics
+if (typeof window !== 'undefined') {
+  (window as unknown as { __bgmService: typeof bgmService }).__bgmService = bgmService;
+}
 
 // Attach to window in browser for runtime testing/diagnostics
 if (typeof window !== 'undefined') {
