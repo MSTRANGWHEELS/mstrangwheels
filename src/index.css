@@ -1,0 +1,194 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    user-select: none;
+    -webkit-user-select: none;
+    overflow-x: hidden;
+    background-color: #0E1438;
+    color: #FFFFFF;
+    font-family: "Nunito", "Quicksand", system-ui, sans-serif;
+  }
+
+  canvas {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+}
+
+/* ========================================================
+   PREMIUM 3D GOLDEN RIBBON BANNER FOR SCHOOL NAME
+   - Glossy Golden-Yellow Gradient
+   - Deep Red (#C62828) Bold Italic Lettering
+   - Subtle 3D Text Shadow & Golden Highlights
+   ======================================================== */
+.ribbon-golden-3d {
+  background: linear-gradient(180deg, #FFFDE7 0%, #FFF176 18%, #FFD54F 45%, #FFB300 75%, #FF8F00 100%);
+  box-shadow:
+    0 4px 15px rgba(255, 214, 0, 0.45),
+    0 2px 6px rgba(0, 0, 0, 0.35);
+  border-top: 2px solid #FFFDE7;
+  border-bottom: 2px solid #FF8F00;
+}
+
+.ribbon-text-red {
+  color: #C62828;
+  font-family: "Nunito", "Quicksand", system-ui, sans-serif;
+  font-weight: 900;
+  font-style: italic;
+  text-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.85),
+    0 2px 4px rgba(136, 14, 79, 0.4);
+}
+
+/* ========================================================
+   VIBRANT GALAXY 3D WORD ART FOR MAIN HEADER
+   - Vibrant Coral-Orange to Golden-Yellow Gradient
+   - Thick White Outline & Deep Purple 3D Extrusion Shadow
+   - Soft Golden / Purple Sparkling Glow
+   ======================================================== */
+.wordart-galaxy {
+  font-family: "Nunito", "Fredoka", "Quicksand", system-ui, sans-serif;
+  font-weight: 900;
+  color: #FFD600;
+  background: linear-gradient(180deg, #FFF59D 0%, #FFD600 30%, #FF9100 65%, #FF3D00 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter:
+    drop-shadow(0 2px 0 #FFFFFF)
+    drop-shadow(0 -2px 0 #FFFFFF)
+    drop-shadow(2px 0 0 #FFFFFF)
+    drop-shadow(-2px 0 0 #FFFFFF)
+    drop-shadow(0 4px 0 #3E1068)
+    drop-shadow(0 6px 0 #240545)
+    drop-shadow(0 10px 22px rgba(179, 136, 255, 0.65));
+  letter-spacing: -0.01em;
+}
+
+/* Cosmic Glassmorphism Card with Neon Purple / Cyan Border */
+.galaxy-card {
+  background: rgba(22, 14, 54, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 2px solid rgba(124, 77, 255, 0.65);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45), 0 0 20px rgba(124, 77, 255, 0.25);
+}
+
+/* Interactive Galaxy Power Button Glow */
+.galaxy-button-spin {
+  background: linear-gradient(180deg, #FF9100 0%, #FF6D00 45%, #FF3D00 100%);
+  border: 3px solid #FFE082;
+  box-shadow:
+    0 0 25px rgba(255, 214, 0, 0.5),
+    0 0 35px rgba(179, 136, 255, 0.45),
+    0 6px 0 #B71C1C,
+    0 12px 24px rgba(0, 0, 0, 0.5);
+  transition: all 0.15s ease-in-out;
+}
+
+.galaxy-button-spin:hover:not(:disabled) {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow:
+    0 0 30px rgba(255, 214, 0, 0.7),
+    0 0 45px rgba(179, 136, 255, 0.6),
+    0 8px 0 #B71C1C,
+    0 16px 28px rgba(0, 0, 0, 0.6);
+}
+
+.galaxy-button-spin:active:not(:disabled) {
+  transform: translateY(4px) scale(0.98);
+  box-shadow:
+    0 0 15px rgba(255, 214, 0, 0.4),
+    0 2px 0 #B71C1C,
+    0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Floating Animations */
+@keyframes floatSlow {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.animate-float-slow {
+  animation: floatSlow 4s ease-in-out infinite;
+}
+
+@keyframes pulseGentle {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.04);
+  }
+}
+
+.animate-pulse-gentle {
+  animation: pulseGentle 3s ease-in-out infinite;
+}
+
+/* Custom fade-in animation for modals */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ========================================================
+   SUPER WINNER ZOOM & FLOATING WINNER BANNER
+   ======================================================== */
+.floating-winner-banner {
+  background: linear-gradient(135deg, rgba(20, 10, 48, 0.96) 0%, rgba(38, 14, 88, 0.96) 100%);
+  border: 3px solid #FFD600;
+  box-shadow:
+    0 0 25px rgba(255, 214, 0, 0.7),
+    0 0 50px rgba(0, 217, 245, 0.5),
+    0 8px 24px rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(12px);
+}
+
+.floating-winner-text {
+  font-family: "Nunito", "Quicksand", system-ui, sans-serif;
+  font-weight: 900;
+  color: #FFD600;
+  text-shadow:
+    0 2px 0 #1A0738,
+    0 0 15px rgba(255, 214, 0, 0.85),
+    0 0 30px rgba(0, 217, 245, 0.65);
+}
+
+@keyframes winnerElasticBounce {
+  0% {
+    opacity: 0;
+    transform: scale(0.2) translateY(24px);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.15) translateY(-6px);
+  }
+  75% {
+    transform: scale(0.95) translateY(2px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-winner-bounce {
+  animation: winnerElasticBounce 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
