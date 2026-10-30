@@ -12,6 +12,57 @@ const LEGACY_KEYS = [
   'mstrang_classes',
 ];
 
+// Fallback in-memory storage for environments where localStorage is blocked
+// (e.g., iOS Safari Private Browsing mode, WebViews, or security-restricted iframes)
+const memoryStorage = new Map<string, string>();
+
+export const safeStorage = {
+  getItem(key: string): string | null {
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        return window.localStorage.getItem(key);
+      }
+    } catch {
+      // In Safari Private Browsing or restricted environments, localStorage throws SecurityError
+    }
+    return memoryStorage.get(key) ?? null;
+  },
+
+  setItem(key: string, value: string): void {
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        window.localStorage.setItem(key, value);
+        return;
+      }
+    } catch {
+      // Storage restricted, fallback to in-memory store
+    }
+    memoryStorage.set(key, value);
+  },
+
+  removeItem(key: string): void {
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        window.localStorage.removeItem(key);
+      }
+    } catch {
+      // Fallback
+    }
+    memoryStorage.delete(key);
+  },
+
+  clear(): void {
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        window.localStorage.clear();
+      }
+    } catch {
+      // Fallback
+    }
+    memoryStorage.clear();
+  },
+};
+
 // The primary starter classes with exact verified photo mappings & Vibrant Galaxy Neon colors
 export const FIVE_TARGET_CLASSES: { id: string; name: string; url: string; color: string }[] = [
   { id: 'cls_class_4_1', name: 'Class 4.1', url: './classes/class-4-1.jpg', color: '#00E676' }, // Bright green
@@ -42,11 +93,11 @@ export function loadStoredClasses(): { classes: ClassItem[]; error?: string } {
   }
 
   try {
-    let raw = localStorage.getItem(STORAGE_KEY_CLASSES);
+    let raw = safeStorage.getItem(STORAGE_KEY_CLASSES);
 
     if (!raw) {
       for (const legacyKey of LEGACY_KEYS) {
-        const legacyData = localStorage.getItem(legacyKey);
+        const legacyData = safeStorage.getItem(legacyKey);
         if (legacyData) {
           raw = legacyData;
           break;
@@ -113,22 +164,27 @@ export function loadStoredClasses(): { classes: ClassItem[]; error?: string } {
 }
 
 export function saveStoredClasses(classes: ClassItem[]): void {
-  if (typeof window === 'undefined') return;
   try {
-    localStorage.setItem(STORAGE_KEY_CLASSES, JSON.stringify(classes));
+    safeStorage.setItem(STORAGE_KEY_CLASSES, JSON.stringify(classes));
   } catch (err) {
     console.error('Failed to save classes to storage:', err);
   }
 }
 
 export function loadSelectedClassId(): string | null {
-  if (typeof window === 'undefined') return null;
-  return localStorage.getItem(STORAGE_KEY_SELECTED);
+  try {
+    return safeStorage.getItem(STORAGE_KEY_SELECTED);
+  } catch {
+    return null;
+  }
 }
 
 export function saveSelectedClassId(classId: string): void {
-  if (typeof window === 'undefined') return;
-  localStorage.setItem(STORAGE_KEY_SELECTED, classId);
+  try {
+    safeStorage.setItem(STORAGE_KEY_SELECTED, classId);
+  } catch (err) {
+    console.error('Failed to save selected class ID:', err);
+  }
 }
 
 // =============================================================================
@@ -142,9 +198,8 @@ const DEFAULT_ROUND_DATA: StoredRoundData = {
 };
 
 export function loadStoredRound(): StoredRoundData {
-  if (typeof window === 'undefined') return DEFAULT_ROUND_DATA;
   try {
-    const raw = localStorage.getItem(STORAGE_KEY_ROUND);
+    const raw = safeStorage.getItem(STORAGE_KEY_ROUND);
     if (!raw) return DEFAULT_ROUND_DATA;
 
     const parsed = JSON.parse(raw);
@@ -160,9 +215,8 @@ export function loadStoredRound(): StoredRoundData {
 }
 
 export function saveStoredRound(data: StoredRoundData): void {
-  if (typeof window === 'undefined') return;
   try {
-    localStorage.setItem(STORAGE_KEY_ROUND, JSON.stringify(data));
+    safeStorage.setItem(STORAGE_KEY_ROUND, JSON.stringify(data));
   } catch (e) {
     console.error('Failed to save round data:', e);
   }

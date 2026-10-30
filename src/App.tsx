@@ -9,6 +9,7 @@ import {
   loadStoredRound,
   saveStoredRound,
   resetStoredRound,
+  safeStorage,
 } from './services/storageService';
 import { validateClassPhoto, isClassEligible } from './services/photoValidationService';
 import { ClassManagerModal } from './features/classes/ClassManagerModal';
@@ -59,25 +60,29 @@ export function App() {
 
   // 1. Initial Load & Selected Class Restore
   useEffect(() => {
-    const { classes: storedClasses, error } = loadStoredClasses();
-    if (error) {
-      addToast({
-        type: 'error',
-        title: 'Storage Warning',
-        message: error,
-      });
+    try {
+      const { classes: storedClasses, error } = loadStoredClasses();
+      if (error) {
+        addToast({
+          type: 'error',
+          title: 'Storage Warning',
+          message: error,
+        });
+      }
+
+      setClasses(storedClasses);
+      setRoundData(loadStoredRound());
+
+      const savedId = loadSelectedClassId();
+      if (savedId && storedClasses.some((c) => c.id === savedId)) {
+        setSelectedClassId(savedId);
+      }
+
+      // Initialize gentle background music (10% default volume on wheel, looped)
+      initBgm(soundEnabled);
+    } catch (err) {
+      console.warn('Initial storage or audio load error caught gracefully:', err);
     }
-
-    setClasses(storedClasses);
-    setRoundData(loadStoredRound());
-
-    const savedId = loadSelectedClassId();
-    if (savedId && storedClasses.some((c) => c.id === savedId)) {
-      setSelectedClassId(savedId);
-    }
-
-    // Initialize gentle background music (10% default volume on wheel, looped)
-    initBgm(soundEnabled);
   }, [addToast]);
 
   // Screen-based BGM volume control:
@@ -388,7 +393,7 @@ export function App() {
     if (selectedClassId === classId) {
       setSelectedClassId(null);
       setIsPhotoModalOpen(false);
-      localStorage.removeItem('mstrang_wheel_selected_id_v3');
+      safeStorage.removeItem('mstrang_wheel_selected_id_v3');
     }
 
     addToast({
@@ -422,34 +427,34 @@ export function App() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Compute dynamic responsive wheel size (proportional across 1080p, 900p, 768p, 720p)
+  // Compute dynamic responsive wheel size (enlarged by ~15% per specification)
   const responsiveWheelSize = useMemo(() => {
     const isDesktop = viewportSize.width >= 1024;
     if (!isDesktop) {
       // Mobile / Tablet portrait: width-constrained
-      const maxWidth = Math.min(viewportSize.width - 32, 400);
+      const maxWidth = Math.min(viewportSize.width - 24, 420);
       const maxHeight = viewportSize.height * 0.44;
-      return Math.max(260, Math.min(maxWidth, maxHeight, 360));
+      return Math.max(260, Math.min(maxWidth, maxHeight, 410));
     }
 
-    // Height-based desktop scaling (exact 15–20% reductions per user specifications):
-    // 1080p (h >= 1000): max 440px
-    // 900p  (h >= 850):  max 380px
-    // 768p  (h >= 750):  max 340px
-    // 720p  (h < 750):   max 300px
-    let heightCap = 440;
+    // Height-based desktop scaling (enlarged by ~15%):
+    // 1080p (h >= 1000): 440px * 1.15 = 506px
+    // 900p  (h >= 850):  380px * 1.15 = 437px
+    // 768p  (h >= 750):  340px * 1.15 = 391px
+    // 720p  (h < 750):   300px * 1.15 = 345px
+    let heightCap = 506;
     if (viewportSize.height < 750) {
-      heightCap = 300;
+      heightCap = 345;
     } else if (viewportSize.height < 850) {
-      heightCap = 340;
+      heightCap = 391;
     } else if (viewportSize.height < 1000) {
-      heightCap = 380;
+      heightCap = 437;
     }
 
-    // Available space reserved: Header ~140px, Footer ~32px, SPIN NOW button & labels ~78px, Margins ~30px = ~280px
-    const availableVerticalForWheel = Math.max(260, viewportSize.height - 280);
-    // Left column takes ~54% of max-w-[1440px]
-    const availableHorizontalForWheel = (Math.min(viewportSize.width, 1440) * 0.54) - 36;
+    // Available space reserved: Header ~95px, Footer ~28px, Compact 50% SPIN NOW button & labels ~68px, Margins ~14px = ~205px
+    const availableVerticalForWheel = Math.max(260, viewportSize.height - 205);
+    // Left column takes ~58% of max-w-[1440px]
+    const availableHorizontalForWheel = (Math.min(viewportSize.width, 1440) * 0.58) - 28;
 
     const calculated = Math.min(availableVerticalForWheel, availableHorizontalForWheel, heightCap);
     return Math.max(260, Math.round(calculated));
@@ -627,12 +632,12 @@ export function App() {
             </CuteButton>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 xl:gap-8 items-center w-full min-h-0">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-4 lg:gap-6 xl:gap-8 items-center w-full min-h-0">
             
-            {/* CỘT TRÁI (Centerpiece Wheel + Galaxy Power Button) – ~54% width */}
+            {/* CỘT TRÁI (Centerpiece Wheel + Galaxy Power Button) – ~58% width */}
             <div className="lg:col-span-7 xl:col-span-7 flex flex-col items-center justify-center w-full py-0.5 min-h-0">
               
-              {/* Vòng quay Galaxy Lucky Wheel: 25-30% larger centerpiece */}
+              {/* Vòng quay Galaxy Lucky Wheel: Enlarged by ~15% */}
               <div className="relative w-full flex justify-center items-center">
                 <WheelCanvas
                   items={classNames}
@@ -643,19 +648,19 @@ export function App() {
                 />
               </div>
 
-              {/* SPIN NOW! Galaxy Power Button */}
-              <div className="mt-1.5 sm:mt-2 lg:mt-2.5 flex flex-col items-center gap-1 flex-shrink-0">
+              {/* SPIN NOW! Galaxy Power Button – Compact 50% Size, min 44px touch height */}
+              <div className="mt-1 sm:mt-1.5 lg:mt-2 flex flex-col items-center gap-0.5 sm:gap-1 flex-shrink-0">
                 <CuteButton
                   color="spin"
-                  size="xl"
+                  size="md"
                   disabled={!canSpin}
                   onClick={handleStartSpin}
-                  className="py-2.5 sm:py-3 px-8 sm:px-12 lg:px-14 text-xl sm:text-2xl font-black shadow-[0_0_24px_rgba(255,145,0,0.55)] active:scale-95 transition-all"
+                  className="min-h-[44px] py-1.5 sm:py-2 px-6 sm:px-8 text-sm sm:text-base font-black rounded-full shadow-[0_0_16px_rgba(255,145,0,0.5)] active:scale-95 transition-all tracking-wider"
                   icon={
                     isSpinning ? (
-                      <Sparkles className="w-6 h-6 sm:w-7 sm:h-7 animate-spin text-white" />
+                      <Sparkles className="w-4.5 h-4.5 sm:w-5 sm:h-5 animate-spin text-white" />
                     ) : (
-                      <Play className="w-6 h-6 sm:w-7 sm:h-7 fill-white text-white" />
+                      <Play className="w-4.5 h-4.5 sm:w-5 sm:h-5 fill-white text-white" />
                     )
                   }
                 >
@@ -663,16 +668,16 @@ export function App() {
                 </CuteButton>
 
                 {/* Sub-label showing wheel status */}
-                <div className="flex items-center gap-2 text-[11px] sm:text-xs font-black text-[#00D9F5]">
+                <div className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-black text-[#00D9F5] bg-[#12092E]/80 border border-[#00D9F5]/40 px-2.5 py-0.5 rounded-full shadow-[0_0_8px_rgba(0,217,245,0.25)]">
                   <span>Showing {classNames.length} classes on wheel</span>
                   {unwonEligibleClasses.length > 10 && (
                     <button
                       onClick={handleRotateWheelGroup}
                       disabled={isSpinning}
-                      className="inline-flex items-center gap-1 text-[10px] sm:text-[11px] bg-[#12092E] border border-[#00D9F5]/50 px-2 py-0.5 rounded-full hover:bg-[#1A0E3C] text-[#FFD600] transition-colors cursor-pointer"
+                      className="inline-flex items-center gap-1 text-[9px] sm:text-[10px] bg-[#7C4DFF] hover:bg-[#9254DE] text-white px-2 py-0.5 rounded border border-[#B388FF] transition-colors cursor-pointer"
                       title="Rotate to next group of 10 classes"
                     >
-                      <RotateCw className="w-3 h-3" /> Rotate Group
+                      <RotateCw className="w-2.5 h-2.5" /> Rotate Group
                     </button>
                   )}
                 </div>
@@ -680,8 +685,8 @@ export function App() {
 
             </div>
 
-            {/* CỘT PHẢI: Selected Class Card & Participating Classes – ~46% width, ~40% larger */}
-            <div className="lg:col-span-5 xl:col-span-5 flex flex-col justify-center w-full mt-2 lg:mt-0 min-h-0">
+            {/* CỘT PHẢI: Selected Class Card & Participating Classes – ~20% more compact */}
+            <div className="lg:col-span-5 xl:col-span-5 flex flex-col justify-center w-full max-w-[440px] xl:max-w-[460px] mx-auto lg:mx-0 mt-1 lg:mt-0 min-h-0">
               <ClassResultCard
                 selectedClass={selectedClass}
                 classes={classes}

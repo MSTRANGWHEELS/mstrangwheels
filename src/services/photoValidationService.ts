@@ -1,5 +1,6 @@
 import { ClassItem, PhotoValidationStatus } from '../types/classTypes';
 import { checkImageLoadsWithDetails, ImageValidationResult } from '../utils/urlValidator';
+import { safeStorage } from './storageService';
 
 const CACHE_KEY = 'mstrang_photo_validation_cache_v3';
 
@@ -24,11 +25,10 @@ const KNOWN_VALID_LOCAL_ASSETS = new Set([
   '/classes/class-5-6.jpg',
 ]);
 
-// Load persistent cache from localStorage (ONLY valid statuses are restored to prevent permanent lockout of fixed URLs)
+// Load persistent cache from safeStorage (ONLY valid statuses are restored to prevent permanent lockout of fixed URLs)
 function initCache() {
-  if (typeof window === 'undefined') return;
   try {
-    const raw = localStorage.getItem(CACHE_KEY);
+    const raw = safeStorage.getItem(CACHE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw) as Record<string, PhotoValidationStatus>;
       for (const [url, status] of Object.entries(parsed)) {
@@ -45,7 +45,6 @@ function initCache() {
 initCache();
 
 function saveCache() {
-  if (typeof window === 'undefined') return;
   try {
     // Only persist 'valid' statuses to prevent stale negative lockouts
     const obj: Record<string, PhotoValidationStatus> = {};
@@ -54,7 +53,7 @@ function saveCache() {
         obj[url] = status;
       }
     }
-    localStorage.setItem(CACHE_KEY, JSON.stringify(obj));
+    safeStorage.setItem(CACHE_KEY, JSON.stringify(obj));
   } catch (e) {
     console.warn('Failed to save photo validation cache', e);
   }
