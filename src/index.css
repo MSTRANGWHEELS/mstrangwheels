@@ -371,38 +371,65 @@
 }
 
 /* ========================================================
-   MAGICAL ENGLISH MESSAGES 3D KAWAII ANIMATIONS
-   - Gentle floating (4-8px)
-   - Soft pulsing & rocking (2-4 degrees)
-   - 4-8s smooth ease-in-out
+   MAGICAL ENGLISH MESSAGE CARD ANIMATIONS
+   - Premium 3D Moving Icons System
+   - Floating distance: 5–8px
+   - Rotation: 2–5 degrees
+   - Duration: 4–8 seconds
+   - Smooth ease-in-out with varied animation delays
+   - Natural, cute, and subtle
    ======================================================== */
 @keyframes msgFloatSlow1 {
   0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-4px) rotate(2deg); }
+  50% { transform: translateY(-6px) rotate(2.5deg); }
 }
 @keyframes msgFloatSlow2 {
   0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-5px) rotate(-2deg); }
+  50% { transform: translateY(-7px) rotate(-2.5deg); }
 }
 @keyframes msgFloatSlow3 {
   0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-4px) rotate(2.5deg); }
+  50% { transform: translateY(-5px) rotate(3deg); }
 }
 @keyframes msgHeartPulse {
   0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.12); }
+  50% { transform: scale(1.10); }
 }
-@keyframes msgPlantSway {
-  0%, 100% { transform: rotate(0deg); }
-  50% { transform: rotate(3deg); }
+@keyframes msgPlantGrowSway {
+  0%, 100% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(3.5deg) scale(1.05); }
 }
-@keyframes msgPencilMove {
+@keyframes msgPencilWrite {
   0%, 100% { transform: rotate(-35deg) translate(0, 0); }
-  50% { transform: rotate(-32deg) translate(2px, -3px); }
+  50% { transform: rotate(-30deg) translate(3px, -4px); }
 }
 @keyframes msgStarTwinkleSoft {
-  0%, 100% { opacity: 0.85; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.08); }
+  0%, 100% { opacity: 0.88; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.10); }
+}
+@keyframes msgSunSwayPulse {
+  0%, 100% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(3.5deg) scale(1.06); }
+}
+@keyframes msgChildWave {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-4px) rotate(3deg); }
+}
+@keyframes msgChildBounce {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+@keyframes msgBulbSoftGlow {
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.08); opacity: 1; }
+}
+@keyframes msgRocketHover {
+  0%, 100% { transform: translateY(0px) rotate(-35deg); }
+  50% { transform: translateY(-7px) rotate(-32deg); }
+}
+@keyframes msgBookFloat {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-6px) rotate(2deg); }
 }
 
 .animate-msg-float-1 {
@@ -435,24 +462,31 @@
   transform-origin: center;
 }
 .animate-msg-plant-sway {
-  animation: msgPlantSway 5s ease-in-out infinite;
+  animation: msgPlantGrowSway 5s ease-in-out infinite;
   transform-origin: bottom center;
 }
 .animate-msg-sun-pulse {
-  animation: msgStarTwinkleSoft 5s ease-in-out infinite;
+  animation: msgSunSwayPulse 5.5s ease-in-out infinite;
   transform-origin: center;
 }
 .animate-msg-pencil {
-  animation: msgPencilMove 4s ease-in-out infinite;
+  animation: msgPencilWrite 4.2s ease-in-out infinite;
 }
 .animate-msg-bulb-glow {
-  animation: msgStarTwinkleSoft 3.8s ease-in-out infinite;
+  animation: msgBulbSoftGlow 3.8s ease-in-out infinite;
+  transform-origin: center;
 }
 .animate-msg-rocket {
-  animation: msgFloatSlow1 5s ease-in-out infinite;
+  animation: msgRocketHover 4.5s ease-in-out infinite;
 }
 .animate-msg-gentle-sway {
-  animation: msgFloatSlow2 6s ease-in-out infinite;
+  animation: msgBookFloat 6s ease-in-out infinite;
+}
+.animate-msg-child-wave {
+  animation: msgChildWave 4s ease-in-out infinite;
+}
+.animate-msg-child-bounce {
+  animation: msgChildBounce 3.6s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -488,7 +522,9 @@
   .animate-msg-pencil,
   .animate-msg-bulb-glow,
   .animate-msg-rocket,
-  .animate-msg-gentle-sway {
+  .animate-msg-gentle-sway,
+  .animate-msg-child-wave,
+  .animate-msg-child-bounce {
     animation: none !important;
   }
 }

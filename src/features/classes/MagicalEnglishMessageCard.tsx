@@ -12,15 +12,16 @@ interface MagicalEnglishMessageCardProps {
 export const MagicalEnglishMessageCard: React.FC<MagicalEnglishMessageCardProps> = ({
   message,
   className = '',
-  illustrationSize = 100,
+  illustrationSize = 135,
 }) => {
   const [isVisible, setIsVisible] = useState(false);
 
-  // Entrance animation: wait ~0.4s then smoothly fade in & glide up over 0.8s
+  // Entrance animation: wait ~0.4s then smoothly scale up (95% -> 100%) and fade in over 0.7s
   useEffect(() => {
+    setIsVisible(false);
     const timer = setTimeout(() => {
       setIsVisible(true);
-    }, 450);
+    }, 400);
     return () => clearTimeout(timer);
   }, [message.id]);
 
@@ -28,34 +29,47 @@ export const MagicalEnglishMessageCard: React.FC<MagicalEnglishMessageCardProps>
     <div
       role="region"
       aria-label={`Magical English Message: ${message.text}. ${message.ariaDescription}`}
-      className={`relative w-full max-w-[210px] mx-auto rounded-2xl bg-gradient-to-b from-[#FFFDF7]/95 via-[#F2FAFD]/95 to-[#E5F5FB]/95 border-2 border-[#8ED8F8] shadow-[0_6px_20px_rgba(22,74,155,0.18),0_0_12px_rgba(142,216,248,0.4)] p-2.5 flex flex-col items-center justify-center text-center select-none transition-all duration-700 ease-out ${
+      className={`relative w-full max-w-[245px] lg:max-w-[260px] xl:max-w-[270px] mx-auto rounded-3xl bg-gradient-to-b from-[#FFFDF3] via-[#DDF9FA] to-[#D8F1FF] border-2 border-[#79DDEA] shadow-[0_8px_24px_rgba(121,221,234,0.36),0_0_18px_rgba(255,217,106,0.3),inset_0_1px_3px_rgba(255,255,255,0.95)] p-3 sm:p-3.5 flex flex-col items-center justify-center text-center select-none transition-all duration-700 ease-out ${
         isVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-3 scale-95'
       } ${className}`}
     >
-      {/* Soft Decorative Star Sparkle in Top Corner */}
-      <div className="absolute -top-1.5 -right-1.5 pointer-events-none">
-        <Sparkles className="w-4 h-4 text-[#FFE17B] animate-spin" />
+      {/* Subtle Top Glossy Sheen Highlight */}
+      <div className="absolute inset-x-0 top-0 h-10 bg-gradient-to-b from-white/70 to-transparent rounded-t-3xl pointer-events-none" />
+
+      {/* Decorative Golden Sparkles on Corners */}
+      <div className="absolute -top-2 -right-2 pointer-events-none drop-shadow-[0_2px_6px_rgba(255,217,106,0.6)]">
+        <Sparkles className="w-5 h-5 text-[#FFD96A] animate-spin" />
+      </div>
+      <div className="absolute -top-1.5 -left-1.5 pointer-events-none drop-shadow-[0_2px_4px_rgba(255,217,106,0.5)]">
+        <Sparkles className="w-3.5 h-3.5 text-[#FFD96A] animate-pulse" />
       </div>
 
-      {/* Tiny Header Badge */}
-      <div className="inline-flex items-center gap-1 bg-[#8ED8F8]/30 px-2 py-0.5 rounded-full mb-1 border border-[#8ED8F8]/60">
-        <span className="text-[8px] font-black uppercase tracking-wider text-[#1265A8]">
-          ✨ Magical Message ✨
+      {/* TOP: Small Decorative Header Label (Increased ~15-20%) */}
+      <div className="relative inline-flex items-center gap-1.5 bg-gradient-to-r from-[#DDF9FA] via-[#FFFDF3] to-[#DDF9FA] border border-[#79DDEA] px-3 py-0.5 rounded-full mb-1 shadow-[0_1px_6px_rgba(121,221,234,0.35)] flex-shrink-0">
+        <span className="text-[8px] text-[#FFD96A]">✨</span>
+        <span className="text-[9px] sm:text-[9.5px] md:text-[10px] font-black uppercase tracking-wider text-[#164A9B] font-heading">
+          MAGICAL ENGLISH MESSAGE
         </span>
+        <span className="text-[8px] text-[#FFD96A]">✨</span>
       </div>
 
-      {/* 3D Illustration Container with Smooth Floating Animation */}
-      <div className="my-0.5 flex items-center justify-center pointer-events-none drop-shadow-sm">
+      {/* MIDDLE: Large 3D Illustration Container with Gentle Moving Animations (+35-45% size) */}
+      <div className="relative my-1 flex items-center justify-center pointer-events-none drop-shadow-sm flex-shrink-0">
         <MagicalMessageIllustration index={message.index} size={illustrationSize} />
       </div>
 
-      {/* Motivational English Sentence in Dark Blue Typography (#164A9B) */}
-      <h3 className="font-heading font-black text-xs sm:text-sm md:text-[15px] leading-tight text-[#164A9B] drop-shadow-[0_1px_4px_rgba(142,216,248,0.45)] tracking-tight my-0.5 px-1">
-        "{message.text}"
+      {/* BOTTOM: Motivational English Sentence – Primary Focus in Deep Royal Blue (#164A9B) – NO quotation marks! */}
+      <h3
+        className="relative font-heading font-black text-base sm:text-[17px] md:text-[19px] lg:text-[20px] xl:text-[21px] leading-tight text-[#164A9B] tracking-tight my-0.5 px-1"
+        style={{
+          textShadow: '0 1px 1px rgba(255, 253, 243, 0.95), 0 2px 6px rgba(22, 74, 155, 0.22)',
+        }}
+      >
+        {message.text}
       </h3>
 
-      {/* Educational Meaning Tooltip / Sub-caption */}
-      <p className="text-[9px] sm:text-[10px] font-bold text-[#1265A8]/85 leading-tight mt-0.5 px-0.5">
+      {/* Short Educational Meaning Explanation */}
+      <p className="relative text-[9.5px] sm:text-[10.5px] font-bold text-[#164A9B]/80 leading-snug mt-1 px-1">
         {message.meaning}
       </p>
     </div>

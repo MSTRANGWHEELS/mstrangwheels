@@ -60,6 +60,13 @@ export const Shared3DDefs: React.FC = () => (
       <stop offset="100%" stopColor="#84D8CE" />
     </linearGradient>
 
+    {/* Pastel Aqua Clay Gradient */}
+    <linearGradient id="clayAqua" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stopColor="#D8FBF7" />
+      <stop offset="50%" stopColor="#A8EDE5" />
+      <stop offset="100%" stopColor="#79DDEA" />
+    </linearGradient>
+
     {/* Sunshine Yellow 3D Star Gradient */}
     <radialGradient id="clayGold" cx="35%" cy="30%" r="70%">
       <stop offset="0%" stopColor="#FFFDE7" />
@@ -216,7 +223,7 @@ export const MsgIllustration0: React.FC<IllustrationProps> = ({ size = 120 }) =>
     </g>
 
     {/* Schoolchild Body (Sky Blue Uniform) */}
-    <g transform="translate(60, 68)">
+    <g className="animate-msg-child-bounce" transform="translate(60, 68)">
       <path d="M -16 12 C -18 36 18 36 16 12 Z" fill="url(#uniformSkyBlue)" filter="url(#softClayShadow)" />
       <path d="M -6 12 L 0 20 L 6 12 Z" fill="#FFF8E8" />
       {/* Arms holding the book */}
@@ -251,7 +258,7 @@ export const MsgIllustration1: React.FC<IllustrationProps> = ({ size = 120 }) =>
   <svg width={size} height={size} viewBox="0 0 120 120" fill="none" className="overflow-visible">
     <Shared3DDefs />
     {/* Child Body */}
-    <g transform="translate(48, 62)">
+    <g className="animate-msg-child-wave" transform="translate(48, 62)">
       <path d="M -15 14 C -18 38 18 38 15 14 Z" fill="url(#uniformSkyBlue)" filter="url(#softClayShadow)" />
       <path d="M -5 14 L 0 20 L 5 14 Z" fill="#FFF8E8" />
       {/* Left arm relaxed */}
@@ -518,7 +525,7 @@ export const MsgIllustration7: React.FC<IllustrationProps> = ({ size = 120 }) =>
   <svg width={size} height={size} viewBox="0 0 120 120" fill="none" className="overflow-visible">
     <Shared3DDefs />
     {/* Child 1 (Boy on left in Sky Blue) */}
-    <g transform="translate(40, 64)">
+    <g className="animate-msg-child-wave" transform="translate(40, 64)">
       <path d="M -14 12 C -16 34 14 34 12 12 Z" fill="url(#uniformSkyBlue)" filter="url(#softClayShadow)" />
       {/* Arm around friend */}
       <path d="M 8 16 C 18 18 22 22 28 20" stroke="url(#uniformSkyBlue)" strokeWidth="5.5" strokeLinecap="round" fill="none" />
@@ -526,7 +533,7 @@ export const MsgIllustration7: React.FC<IllustrationProps> = ({ size = 120 }) =>
     </g>
 
     {/* Child 2 (Girl on right in Lavender) */}
-    <g transform="translate(80, 64)">
+    <g className="animate-msg-child-bounce" transform="translate(80, 64)">
       <path d="M -12 12 C -14 34 14 34 12 12 Z" fill="url(#uniformLavender)" filter="url(#softClayShadow)" />
       {/* Arm holding hands */}
       <path d="M -8 16 C -18 18 -22 22 -28 20" stroke="url(#uniformLavender)" strokeWidth="5.5" strokeLinecap="round" fill="none" />
@@ -599,13 +606,13 @@ export const MsgIllustration9: React.FC<IllustrationProps> = ({ size = 120 }) =>
     </g>
 
     {/* Child 1 (Boy on left) */}
-    <g transform="translate(38, 70)">
+    <g className="animate-msg-child-bounce" transform="translate(38, 70)">
       <path d="M -12 12 C -14 34 14 34 12 12 Z" fill="url(#uniformSkyBlue)" filter="url(#softClayShadow)" />
       <KawaiiBoyHead cx={0} cy={0} scale={0.84} />
     </g>
 
     {/* Child 2 (Girl on right) */}
-    <g transform="translate(82, 70)">
+    <g className="animate-msg-child-wave" transform="translate(82, 70)">
       <path d="M -12 12 C -14 34 14 34 12 12 Z" fill="url(#uniformLavender)" filter="url(#softClayShadow)" />
       <KawaiiGirlHead cx={0} cy={0} scale={0.84} />
     </g>

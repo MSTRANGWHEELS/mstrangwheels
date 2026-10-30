@@ -297,19 +297,19 @@ export const FullScreenClassPhotoModal: React.FC<FullScreenClassPhotoModalProps>
 
       {/* ========================================================
           2. MAIN CONTENT AREA: RESPONSIVE CSS GRID
-          - Left: Exactly ONE Mini Wheel + Winner Badge + MAGICAL ENGLISH MESSAGE CARD (185-225px)
+          - Left: Exactly ONE Mini Wheel + Winner Badge + MAGICAL ENGLISH MESSAGE CARD (215-265px)
           - Right (1fr): Auto-Fit Photo Container (Maximizes width and height with object-contain)
-          - Gap: 12-16px on desktop (meets 12-20px specification)
+          - Gap: 12-16px on desktop
           ======================================================== */}
       <div
-        className="flex-1 w-full min-h-0 grid grid-cols-1 md:grid-cols-[185px_1fr] lg:grid-cols-[210px_1fr] xl:grid-cols-[225px_1fr] gap-2.5 sm:gap-3.5 lg:gap-4 px-1 sm:px-2 mt-0.5 mb-1 sm:mb-1.5 overflow-hidden"
+        className="flex-1 w-full min-h-0 grid grid-cols-1 md:grid-cols-[215px_1fr] lg:grid-cols-[245px_1fr] xl:grid-cols-[265px_1fr] gap-2.5 sm:gap-3.5 lg:gap-4 px-1 sm:px-2 mt-0.5 mb-1 sm:mb-1.5 overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* LEFT COLUMN: MINI WHEEL + WINNER BADGE + MAGICAL ENGLISH MESSAGE */}
         <div className="flex flex-row md:flex-col items-center justify-between md:justify-start h-full py-0.5 px-0.5 flex-shrink-0 z-10 gap-1.5 overflow-hidden">
           
           {/* Miniature Wheel Centerpiece */}
-          <div className="w-18 sm:w-22 md:w-full max-w-[135px] aspect-square flex items-center justify-center my-0.5 flex-shrink-0">
+          <div className="w-18 sm:w-22 md:w-full max-w-[130px] aspect-square flex items-center justify-center my-0.5 flex-shrink-0">
             <WheelCanvas
               items={classNames}
               rotationAngle={winningAngle}
@@ -333,7 +333,7 @@ export const FullScreenClassPhotoModal: React.FC<FullScreenClassPhotoModalProps>
           <div className="hidden md:flex flex-col items-center justify-center w-full flex-1 min-h-0 my-0.5">
             <MagicalEnglishMessageCard
               message={currentMessage}
-              illustrationSize={viewportHeight < 750 ? 82 : viewportHeight < 880 ? 94 : 104}
+              illustrationSize={viewportHeight < 750 ? 112 : viewportHeight < 880 ? 128 : 144}
             />
           </div>
 
@@ -389,12 +389,15 @@ export const FullScreenClassPhotoModal: React.FC<FullScreenClassPhotoModalProps>
 
           {/* Mobile Motivational Message Banner (Visible only on < md screens) */}
           <div className="md:hidden w-full flex justify-center mt-1 z-20">
-            <div className="inline-flex items-center gap-1.5 bg-[#FFFDF7]/95 border-2 border-[#8ED8F8] px-3 py-1 rounded-full shadow-[0_2px_10px_rgba(22,74,155,0.15)] max-w-[94%]">
-              <span className="text-xs">✨</span>
-              <span className="font-heading font-black text-xs text-[#164A9B] truncate">
-                "{currentMessage.text}"
+            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-[#FFFDF3] via-[#DDF9FA] to-[#D8F1FF] border-2 border-[#79DDEA] px-3.5 py-1 rounded-full shadow-[0_2px_12px_rgba(121,221,234,0.35),0_0_8px_rgba(255,217,106,0.25)] max-w-[94%]">
+              <span className="text-xs text-[#FFD96A]">✨</span>
+              <span
+                className="font-heading font-black text-xs sm:text-sm text-[#164A9B] truncate"
+                style={{ textShadow: '0 1px 1px rgba(255,253,243,0.9)' }}
+              >
+                {currentMessage.text}
               </span>
-              <span className="text-xs">✨</span>
+              <span className="text-xs text-[#FFD96A]">✨</span>
             </div>
           </div>
         </div>
