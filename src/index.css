@@ -370,6 +370,91 @@
   transform-origin: center top;
 }
 
+/* ========================================================
+   MAGICAL ENGLISH MESSAGES 3D KAWAII ANIMATIONS
+   - Gentle floating (4-8px)
+   - Soft pulsing & rocking (2-4 degrees)
+   - 4-8s smooth ease-in-out
+   ======================================================== */
+@keyframes msgFloatSlow1 {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-4px) rotate(2deg); }
+}
+@keyframes msgFloatSlow2 {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-5px) rotate(-2deg); }
+}
+@keyframes msgFloatSlow3 {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-4px) rotate(2.5deg); }
+}
+@keyframes msgHeartPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.12); }
+}
+@keyframes msgPlantSway {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(3deg); }
+}
+@keyframes msgPencilMove {
+  0%, 100% { transform: rotate(-35deg) translate(0, 0); }
+  50% { transform: rotate(-32deg) translate(2px, -3px); }
+}
+@keyframes msgStarTwinkleSoft {
+  0%, 100% { opacity: 0.85; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.08); }
+}
+
+.animate-msg-float-1 {
+  animation: msgFloatSlow1 5s ease-in-out infinite;
+}
+.animate-msg-float-2 {
+  animation: msgFloatSlow2 5.5s ease-in-out infinite;
+}
+.animate-msg-float-3 {
+  animation: msgFloatSlow3 6s ease-in-out infinite;
+}
+.animate-msg-star-sparkle {
+  animation: msgStarTwinkleSoft 4s ease-in-out infinite;
+}
+.animate-msg-star-twinkle {
+  animation: msgStarTwinkleSoft 4.5s ease-in-out infinite;
+}
+.animate-msg-star-rise {
+  animation: msgFloatSlow1 6s ease-in-out infinite;
+}
+.animate-msg-climb {
+  animation: msgFloatSlow2 4.5s ease-in-out infinite;
+}
+.animate-msg-cape {
+  animation: msgFloatSlow3 4s ease-in-out infinite;
+  transform-origin: top center;
+}
+.animate-msg-heart-pulse {
+  animation: msgHeartPulse 3.5s ease-in-out infinite;
+  transform-origin: center;
+}
+.animate-msg-plant-sway {
+  animation: msgPlantSway 5s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+.animate-msg-sun-pulse {
+  animation: msgStarTwinkleSoft 5s ease-in-out infinite;
+  transform-origin: center;
+}
+.animate-msg-pencil {
+  animation: msgPencilMove 4s ease-in-out infinite;
+}
+.animate-msg-bulb-glow {
+  animation: msgStarTwinkleSoft 3.8s ease-in-out infinite;
+}
+.animate-msg-rocket {
+  animation: msgFloatSlow1 5s ease-in-out infinite;
+}
+.animate-msg-gentle-sway {
+  animation: msgFloatSlow2 6s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-float-planet,
   .animate-float-planet-alt,
@@ -388,7 +473,22 @@
   .animate-pv-star,
   .animate-pv-books,
   .animate-pv-rocket,
-  .animate-pv-flame {
+  .animate-pv-flame,
+  .animate-msg-float-1,
+  .animate-msg-float-2,
+  .animate-msg-float-3,
+  .animate-msg-star-sparkle,
+  .animate-msg-star-twinkle,
+  .animate-msg-star-rise,
+  .animate-msg-climb,
+  .animate-msg-cape,
+  .animate-msg-heart-pulse,
+  .animate-msg-plant-sway,
+  .animate-msg-sun-pulse,
+  .animate-msg-pencil,
+  .animate-msg-bulb-glow,
+  .animate-msg-rocket,
+  .animate-msg-gentle-sway {
     animation: none !important;
   }
 }

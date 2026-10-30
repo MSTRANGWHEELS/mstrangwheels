@@ -13,6 +13,12 @@ import {
   decreaseBgmVolume,
   onBgmVolumeChange,
 } from '../../services/bgmService';
+import {
+  getNextEnglishMessage,
+  getCurrentEnglishMessage,
+} from '../../services/englishMessageService';
+import { EnglishMessageItem } from '../../types/messageTypes';
+import { MagicalEnglishMessageCard } from './MagicalEnglishMessageCard';
 import { X, ImageOff, Sparkles, Volume2 } from 'lucide-react';
 
 interface FullScreenClassPhotoModalProps {
@@ -33,6 +39,11 @@ export const FullScreenClassPhotoModal: React.FC<FullScreenClassPhotoModalProps>
   const [candidateIndex, setCandidateIndex] = useState(0);
   const [bgmVolume, setBgmVolume] = useState<number>(() => getBgmVolumePercent());
 
+  // Non-repeating Magical English Message state
+  const [currentMessage, setCurrentMessage] = useState<EnglishMessageItem>(() =>
+    getCurrentEnglishMessage()
+  );
+
   // Viewport tracking for intelligent photo sizing and mini wheel scaling
   const [viewportHeight, setViewportHeight] = useState(() =>
     typeof window !== 'undefined' ? window.innerHeight : 800
@@ -46,9 +57,9 @@ export const FullScreenClassPhotoModal: React.FC<FullScreenClassPhotoModalProps>
 
   // Mini wheel diameter tuned to available vertical height
   const miniWheelSize = useMemo(() => {
-    if (viewportHeight < 750) return 115;
-    if (viewportHeight < 880) return 130;
-    return 145;
+    if (viewportHeight < 750) return 110;
+    if (viewportHeight < 880) return 125;
+    return 138;
   }, [viewportHeight]);
 
   // Close on Escape key press
@@ -69,6 +80,14 @@ export const FullScreenClassPhotoModal: React.FC<FullScreenClassPhotoModalProps>
   useEffect(() => {
     setBgmVolume(getBgmVolumePercent());
     return onBgmVolumeChange((vol) => setBgmVolume(vol));
+  }, [isOpen]);
+
+  // Rotate to the next non-repeating English message whenever the modal opens
+  useEffect(() => {
+    if (isOpen) {
+      const next = getNextEnglishMessage();
+      setCurrentMessage(next);
+    }
   }, [isOpen]);
 
   // Reset load error state & candidate index immediately when selected class changes
@@ -224,7 +243,7 @@ export const FullScreenClassPhotoModal: React.FC<FullScreenClassPhotoModalProps>
           </button>
         </div>
 
-        {/* 2. ICON: Cute Smiling Golden 3D Star (Icon 2) in Top Bar Safe Zone */}
+        {/* 2. ICON: Cute Smiling Golden 3D Star in Top Bar Safe Zone */}
         <div className="flex items-center gap-1.5 pointer-events-none select-none animate-pv-star">
           <svg
             className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 drop-shadow-[0_2px_10px_rgba(255,214,0,0.6)]"
@@ -278,58 +297,19 @@ export const FullScreenClassPhotoModal: React.FC<FullScreenClassPhotoModalProps>
 
       {/* ========================================================
           2. MAIN CONTENT AREA: RESPONSIVE CSS GRID
-          - Left: Exactly ONE Mini Wheel + Cute Planet + Schoolbooks + Winner Badge (150-170px)
+          - Left: Exactly ONE Mini Wheel + Winner Badge + MAGICAL ENGLISH MESSAGE CARD (185-225px)
           - Right (1fr): Auto-Fit Photo Container (Maximizes width and height with object-contain)
           - Gap: 12-16px on desktop (meets 12-20px specification)
           ======================================================== */}
       <div
-        className="flex-1 w-full min-h-0 grid grid-cols-1 md:grid-cols-[145px_1fr] lg:grid-cols-[160px_1fr] xl:grid-cols-[170px_1fr] gap-3 sm:gap-4 lg:gap-4 px-1 sm:px-2 mt-0.5 mb-1.5 sm:mb-2 overflow-hidden"
+        className="flex-1 w-full min-h-0 grid grid-cols-1 md:grid-cols-[185px_1fr] lg:grid-cols-[210px_1fr] xl:grid-cols-[225px_1fr] gap-2.5 sm:gap-3.5 lg:gap-4 px-1 sm:px-2 mt-0.5 mb-1 sm:mb-1.5 overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* EXACTLY ONE MINI WHEEL ON THE LEFT (Dedicated layout region, zero photo overlap) */}
-        <div className="flex flex-row md:flex-col items-center justify-between md:justify-around h-full py-0.5 px-0.5 flex-shrink-0 z-10">
+        {/* LEFT COLUMN: MINI WHEEL + WINNER BADGE + MAGICAL ENGLISH MESSAGE */}
+        <div className="flex flex-row md:flex-col items-center justify-between md:justify-start h-full py-0.5 px-0.5 flex-shrink-0 z-10 gap-1.5 overflow-hidden">
           
-          {/* 1. ICON: Cute Pastel Purple Planet with Colorful Ring (Upper Left) */}
-          <div className="hidden md:flex items-center justify-center pointer-events-none select-none animate-pv-planet">
-            <svg
-              className="w-12 h-12 lg:w-14 lg:h-14 xl:w-16 xl:h-16 drop-shadow-[0_4px_16px_rgba(179,136,255,0.6)]"
-              viewBox="0 0 100 100"
-              fill="none"
-            >
-              <defs>
-                <radialGradient id="pvPurplePlanet" cx="35%" cy="30%" r="65%">
-                  <stop offset="0%" stopColor="#F3E5F5" />
-                  <stop offset="40%" stopColor="#CE93D8" />
-                  <stop offset="85%" stopColor="#9C27B0" />
-                  <stop offset="100%" stopColor="#6A1B9A" />
-                </radialGradient>
-                <linearGradient id="pvColorfulRing" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#FFF9C4" />
-                  <stop offset="35%" stopColor="#00E5FF" />
-                  <stop offset="70%" stopColor="#FF80AB" />
-                  <stop offset="100%" stopColor="#FFD54F" />
-                </linearGradient>
-              </defs>
-              <g className="animate-pv-ring" style={{ transformOrigin: '50px 50px' }}>
-                <ellipse cx="50" cy="50" rx="44" ry="14" stroke="url(#pvColorfulRing)" strokeWidth="6" opacity="0.9" strokeDasharray="120 120" strokeDashoffset="120" />
-              </g>
-              <circle cx="50" cy="50" r="28" fill="url(#pvPurplePlanet)" />
-              <ellipse cx="42" cy="38" rx="10" ry="6" transform="rotate(-25 42 38)" fill="#FFFFFF" opacity="0.4" />
-              <circle cx="42" cy="49" r="2.8" fill="#1A0738" />
-              <circle cx="41" cy="48" r="1" fill="#FFFFFF" />
-              <circle cx="58" cy="49" r="2.8" fill="#1A0738" />
-              <circle cx="57" cy="48" r="1" fill="#FFFFFF" />
-              <circle cx="39" cy="55" r="3.5" fill="#FF4081" opacity="0.85" />
-              <circle cx="61" cy="55" r="3.5" fill="#FF4081" opacity="0.85" />
-              <path d="M 45 54 Q 50 60 55 54" stroke="#1A0738" strokeWidth="2.2" strokeLinecap="round" fill="none" />
-              <g className="animate-pv-ring" style={{ transformOrigin: '50px 50px' }}>
-                <ellipse cx="50" cy="50" rx="44" ry="14" stroke="url(#pvColorfulRing)" strokeWidth="6" opacity="0.95" strokeDasharray="120 120" strokeDashoffset="0" />
-              </g>
-            </svg>
-          </div>
-
           {/* Miniature Wheel Centerpiece */}
-          <div className="w-20 sm:w-24 md:w-full max-w-[150px] aspect-square flex items-center justify-center my-0.5">
+          <div className="w-18 sm:w-22 md:w-full max-w-[135px] aspect-square flex items-center justify-center my-0.5 flex-shrink-0">
             <WheelCanvas
               items={classNames}
               rotationAngle={winningAngle}
@@ -340,7 +320,7 @@ export const FullScreenClassPhotoModal: React.FC<FullScreenClassPhotoModalProps>
           </div>
 
           {/* Small Winner Badge */}
-          <div className="bg-[#1A0E3C] border-2 border-[#00D9F5] rounded-xl px-2.5 sm:px-3 py-1 shadow-[0_0_12px_rgba(0,217,245,0.35)] text-center my-0.5 flex-shrink-0">
+          <div className="bg-[#1A0E3C] border-2 border-[#00D9F5] rounded-xl px-2.5 sm:px-3 py-0.5 sm:py-1 shadow-[0_0_12px_rgba(0,217,245,0.35)] text-center my-0.5 flex-shrink-0">
             <span className="block text-[8px] sm:text-[9px] font-black uppercase tracking-wider text-[#FFD600]">
               LUCKY WINNER
             </span>
@@ -349,36 +329,12 @@ export const FullScreenClassPhotoModal: React.FC<FullScreenClassPhotoModalProps>
             </span>
           </div>
 
-          {/* 3. ICON: Cute 3D Colorful Schoolbooks (Lower Left) */}
-          <div className="hidden md:flex items-center justify-center pointer-events-none select-none animate-pv-books">
-            <svg
-              className="w-12 h-12 lg:w-14 lg:h-14 xl:w-16 xl:h-16 drop-shadow-[0_6px_16px_rgba(0,184,212,0.5)]"
-              viewBox="0 0 100 100"
-              fill="none"
-            >
-              <defs>
-                <linearGradient id="pvBookTeal" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#00E5FF" />
-                  <stop offset="100%" stopColor="#0091EA" />
-                </linearGradient>
-                <linearGradient id="pvBookCoral" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#FF80AB" />
-                  <stop offset="100%" stopColor="#E91E63" />
-                </linearGradient>
-                <linearGradient id="pvBookGold" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#FFF59D" />
-                  <stop offset="100%" stopColor="#FFB300" />
-                </linearGradient>
-              </defs>
-              <rect x="18" y="66" width="64" height="15" rx="3.5" fill="url(#pvBookTeal)" stroke="#006064" strokeWidth="1.8" />
-              <rect x="22" y="69" width="56" height="9" fill="#FFFDE7" />
-              <line x1="22" y1="73.5" x2="78" y2="73.5" stroke="#E0E0E0" strokeWidth="1" />
-              <rect x="22" y="50" width="58" height="14" rx="3" fill="url(#pvBookCoral)" stroke="#880E4F" strokeWidth="1.8" transform="rotate(3 51 57)" />
-              <rect x="26" y="53" width="50" height="8" fill="#FFFDE7" transform="rotate(3 51 57)" />
-              <rect x="26" y="35" width="52" height="13" rx="3" fill="url(#pvBookGold)" stroke="#E65100" strokeWidth="1.8" transform="rotate(-4 52 41)" />
-              <circle cx="52" cy="41" r="3.5" fill="#FFFFFF" opacity="0.9" />
-              <path d="M 66 40 L 71 58 L 66 54 L 61 58 Z" fill="#7C4DFF" />
-            </svg>
+          {/* MAGICAL ENGLISH MESSAGE CARD (Desktop: Integrated in dedicated left column, ZERO photo overlap) */}
+          <div className="hidden md:flex flex-col items-center justify-center w-full flex-1 min-h-0 my-0.5">
+            <MagicalEnglishMessageCard
+              message={currentMessage}
+              illustrationSize={viewportHeight < 750 ? 82 : viewportHeight < 880 ? 94 : 104}
+            />
           </div>
 
         </div>
@@ -430,6 +386,17 @@ export const FullScreenClassPhotoModal: React.FC<FullScreenClassPhotoModalProps>
               />
             </div>
           )}
+
+          {/* Mobile Motivational Message Banner (Visible only on < md screens) */}
+          <div className="md:hidden w-full flex justify-center mt-1 z-20">
+            <div className="inline-flex items-center gap-1.5 bg-[#FFFDF7]/95 border-2 border-[#8ED8F8] px-3 py-1 rounded-full shadow-[0_2px_10px_rgba(22,74,155,0.15)] max-w-[94%]">
+              <span className="text-xs">✨</span>
+              <span className="font-heading font-black text-xs text-[#164A9B] truncate">
+                "{currentMessage.text}"
+              </span>
+              <span className="text-xs">✨</span>
+            </div>
+          </div>
         </div>
       </div>
 
