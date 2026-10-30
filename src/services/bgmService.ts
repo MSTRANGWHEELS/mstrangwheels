@@ -1,21 +1,26 @@
+import { safeStorage } from './storageService';
+
 /**
  * Background Music (BGM) Singleton Service
  *
  * Requirements:
  * - Exact audio track from Google Drive (id: 1QZjyCeASZroVKDK2fCvppVe6I4OnIGRy)
- * - Wheel Screen Volume: 10% (0.10)
- * - Photo Viewer Volume: 15% (0.15) with smooth 0.5s transition
- * - AI MC Speech Ducking: 5% (0.05), restored to screen volume (10% or 15%)
+ * - Wheel Screen Volume: 4% base volume (gentle, soft, unobtrusive)
+ * - Photo Viewer Volume: 6% base volume
+ * - AI MC Speech Ducking: 1.5% ducked volume during AI MC speech
+ * - Volume Level Adjustments (+ / - buttons, 0-100%, default 40%)
  * - Continuous looping without restarting across spins and photo viewer
  * - Voice ON/OFF controls all application audio
  * - Strict Singleton: Prevents duplicate audio elements
  */
 
-export const WHEEL_BGM_VOLUME = 0.10;        // 10% on main spinning wheel screen
-export const PHOTO_VIEWER_BGM_VOLUME = 0.15; // 15% in class photo viewer
-export const DUCKED_BGM_VOLUME = 0.05;       // 5% ducked volume during AI MC speech
-export const DEFAULT_BGM_VOLUME = WHEEL_BGM_VOLUME;
+export const BASE_WHEEL_VOLUME = 0.04;        // Gentle 4% base on main spinning wheel screen
+export const BASE_PHOTO_VIEWER_VOLUME = 0.06; // Gentle 6% base in class photo viewer
+export const BASE_DUCKED_VOLUME = 0.015;      // 1.5% ducked volume during AI MC speech
+
+export const DEFAULT_BGM_VOLUME = BASE_WHEEL_VOLUME;
 export const BGM_AUDIO_SRC = './audio/bgm.mp3';
+const STORAGE_KEY_BGM_VOLUME = 'mstrang_bgm_volume_level_v1';
 
 export type BgmScreenMode = 'wheel' | 'photo';
 
@@ -56,9 +61,21 @@ class BgmManager {
   private hasUserUnlocked: boolean = false;
   private fadeInterval: ReturnType<typeof setInterval> | null = null;
   private unlockListenersAttached: boolean = false;
+  private volumePercent: number = 40; // Default: 40% (delicately quiet and pleasant)
+  private volumeListeners: Set<(percent: number) => void> = new Set();
 
   private constructor() {
-    // Singleton constructor
+    try {
+      const saved = safeStorage.getItem(STORAGE_KEY_BGM_VOLUME);
+      if (saved) {
+        const val = parseInt(saved, 10);
+        if (!isNaN(val) && val >= 0 && val <= 100) {
+          this.volumePercent = val;
+        }
+      }
+    } catch {
+      this.volumePercent = 40;
+    }
   }
 
   public static getInstance(): BgmManager {
@@ -66,6 +83,85 @@ class BgmManager {
       BgmManager.instance = new BgmManager();
     }
     return BgmManager.instance;
+  }
+
+  /**
+   * Calculate effective target volume factoring in user volume level (0-100%)
+   */
+  private getEffectiveVolume(baseVolume: number): number {
+    const factor = this.volumePercent / 50; // 50% = 1.0x, 40% = 0.8x, 100% = 2.0x, 0% = 0
+    return Math.max(0, Math.min(1, baseVolume * factor));
+  }
+
+  /**
+   * Get active target volume based on current screen mode and ducked status
+   */
+  public getCurrentTargetVolume(): number {
+    const base = this.isDucked
+      ? BASE_DUCKED_VOLUME
+      : (this.currentScreen === 'photo' ? BASE_PHOTO_VIEWER_VOLUME : BASE_WHEEL_VOLUME);
+    return this.getEffectiveVolume(base);
+  }
+
+  /**
+   * Get user volume scale (0 to 100%)
+   */
+  public getVolumePercent(): number {
+    return this.volumePercent;
+  }
+
+  /**
+   * Set user volume scale (0 to 100%)
+   */
+  public setVolumePercent(percent: number): void {
+    const clamped = Math.max(0, Math.min(100, Math.round(percent)));
+    this.volumePercent = clamped;
+    safeStorage.setItem(STORAGE_KEY_BGM_VOLUME, String(clamped));
+    this.applyCurrentVolume();
+    this.volumeListeners.forEach((listener) => {
+      try {
+        listener(clamped);
+      } catch {
+        // Safe notify
+      }
+    });
+  }
+
+  /**
+   * Subscribe to volume changes
+   */
+  public subscribeVolume(listener: (percent: number) => void): () => void {
+    this.volumeListeners.add(listener);
+    return () => {
+      this.volumeListeners.delete(listener);
+    };
+  }
+
+  /**
+   * Increase volume step (+10%)
+   */
+  public increaseVolume(step: number = 10): number {
+    const next = Math.min(100, this.volumePercent + step);
+    this.setVolumePercent(next);
+    return next;
+  }
+
+  /**
+   * Decrease volume step (-10%)
+   */
+  public decreaseVolume(step: number = 10): number {
+    const next = Math.max(0, this.volumePercent - step);
+    this.setVolumePercent(next);
+    return next;
+  }
+
+  /**
+   * Immediately apply current volume to audio element
+   */
+  private applyCurrentVolume(): void {
+    if (!this.audio || !this.isEnabled) return;
+    const target = this.getCurrentTargetVolume();
+    safeSetVolume(this.audio, target);
   }
 
   /**
@@ -80,7 +176,7 @@ class BgmManager {
       if (!this.audio) {
         const audio = new Audio(BGM_AUDIO_SRC);
         audio.loop = true;
-        safeSetVolume(audio, this.currentScreen === 'photo' ? PHOTO_VIEWER_BGM_VOLUME : WHEEL_BGM_VOLUME);
+        safeSetVolume(audio, this.getCurrentTargetVolume());
         audio.preload = 'auto';
         this.audio = audio;
 
@@ -105,14 +201,14 @@ class BgmManager {
   }
 
   /**
-   * Set screen mode ('wheel' = 10%, 'photo' = 15%) with smooth 0.5s fade
+   * Set screen mode ('wheel' or 'photo') with smooth 0.5s fade
    */
   public setScreen(screen: BgmScreenMode, durationMs: number = 500): void {
     this.currentScreen = screen;
     if (!this.isEnabled || !this.audio) return;
 
     if (!this.isDucked) {
-      const targetVolume = screen === 'photo' ? PHOTO_VIEWER_BGM_VOLUME : WHEEL_BGM_VOLUME;
+      const targetVolume = this.getCurrentTargetVolume();
       this.fadeVolume(targetVolume, durationMs);
     }
   }
@@ -148,9 +244,7 @@ class BgmManager {
         // Safe pause
       }
     } else {
-      const targetVol = this.isDucked
-        ? DUCKED_BGM_VOLUME
-        : (this.currentScreen === 'photo' ? PHOTO_VIEWER_BGM_VOLUME : WHEEL_BGM_VOLUME);
+      const targetVol = this.getCurrentTargetVolume();
       safeSetVolume(this.audio, targetVol);
       this.play();
     }
@@ -199,21 +293,22 @@ class BgmManager {
   }
 
   /**
-   * Smoothly duck BGM to 5% (0.05) during AI MC voice announcement
+   * Smoothly duck BGM during AI MC voice announcement
    */
   public duck(durationMs: number = 300): void {
     this.isDucked = true;
     if (!this.isEnabled || !this.audio) return;
-    this.fadeVolume(DUCKED_BGM_VOLUME, durationMs);
+    const target = this.getCurrentTargetVolume();
+    this.fadeVolume(target, durationMs);
   }
 
   /**
-   * Smoothly restore BGM back to screen volume (10% on wheel, 15% in photo viewer)
+   * Smoothly restore BGM back to screen volume
    */
   public restore(durationMs: number = 400): void {
     this.isDucked = false;
     if (!this.isEnabled || !this.audio) return;
-    const targetVolume = this.currentScreen === 'photo' ? PHOTO_VIEWER_BGM_VOLUME : WHEEL_BGM_VOLUME;
+    const targetVolume = this.getCurrentTargetVolume();
     this.fadeVolume(targetVolume, durationMs);
   }
 
@@ -244,7 +339,7 @@ class BgmManager {
 
     const diff = targetVolume - startVol;
 
-    if (Math.abs(diff) < 0.005 || durationMs <= 0) {
+    if (Math.abs(diff) < 0.003 || durationMs <= 0) {
       safeSetVolume(this.audio, targetVolume);
       return;
     }
@@ -320,6 +415,7 @@ class BgmManager {
       currentScreen: this.currentScreen,
       isPlaying: this.audio ? !this.audio.paused : false,
       volume: vol,
+      volumePercent: this.volumePercent,
       loop: this.audio ? this.audio.loop : false,
       currentTime: this.audio ? this.audio.currentTime : 0,
       hasUserUnlocked: this.hasUserUnlocked,
@@ -336,6 +432,11 @@ export const setBgmEnabled = (enabled: boolean) => bgmService.setEnabled(enabled
 export const setBgmScreen = (screen: BgmScreenMode, durationMs?: number) => bgmService.setScreen(screen, durationMs);
 export const duckBgm = (durationMs?: number) => bgmService.duck(durationMs);
 export const restoreBgm = (durationMs?: number) => bgmService.restore(durationMs);
+export const getBgmVolumePercent = () => bgmService.getVolumePercent();
+export const setBgmVolumePercent = (percent: number) => bgmService.setVolumePercent(percent);
+export const increaseBgmVolume = (step?: number) => bgmService.increaseVolume(step);
+export const decreaseBgmVolume = (step?: number) => bgmService.decreaseVolume(step);
+export const onBgmVolumeChange = (listener: (percent: number) => void) => bgmService.subscribeVolume(listener);
 export const getBgmState = () => bgmService.getState();
 
 // Attach to window in browser for runtime testing/diagnostics

@@ -7,7 +7,13 @@ import {
   extractGoogleDriveId,
   getGoogleDriveCandidates,
 } from '../../utils/urlValidator';
-import { X, ImageOff, Sparkles } from 'lucide-react';
+import {
+  getBgmVolumePercent,
+  increaseBgmVolume,
+  decreaseBgmVolume,
+  onBgmVolumeChange,
+} from '../../services/bgmService';
+import { X, ImageOff, Sparkles, Volume2 } from 'lucide-react';
 
 interface FullScreenClassPhotoModalProps {
   isOpen: boolean;
@@ -25,6 +31,7 @@ export const FullScreenClassPhotoModal: React.FC<FullScreenClassPhotoModalProps>
 }) => {
   const [loadError, setLoadError] = useState(false);
   const [candidateIndex, setCandidateIndex] = useState(0);
+  const [bgmVolume, setBgmVolume] = useState<number>(() => getBgmVolumePercent());
 
   // Close on Escape key press
   useEffect(() => {
@@ -39,6 +46,12 @@ export const FullScreenClassPhotoModal: React.FC<FullScreenClassPhotoModalProps>
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onClose]);
+
+  // Sync BGM volume with background service singleton
+  useEffect(() => {
+    setBgmVolume(getBgmVolumePercent());
+    return onBgmVolumeChange((vol) => setBgmVolume(vol));
+  }, [isOpen]);
 
   // Reset load error state & candidate index immediately when selected class changes
   useEffect(() => {
@@ -141,187 +154,169 @@ export const FullScreenClassPhotoModal: React.FC<FullScreenClassPhotoModalProps>
       />
 
       {/* ========================================================
-          ANIMATED 3D CARTOON DECORATIONS IN PHOTO VIEWER
-          - Top-Left: Cute Smiling 3D Yellow Sun (Rotating rays)
-          - Top-Right: Pastel Purple Planet with glowing golden ring
-          - Mid-Left: Cute Stack of 3D Colorful Schoolbooks (Rocking float)
-          - Mid-Right: Friendly Cartoon Astronaut (Gentle float & tilt)
-          - Bottom-Left: Cute Miniature Rocket (Hovering engine glow)
-          - Bottom-Right: Small Turquoise Planet (Gentle float)
-          - Surrounding: Tiny Twinkling Stars & Magical Sparkles
+          FOUR CUTE ANIMATED 3D CARTOON ICONS
+          1. Upper-Left: Cute Purple Planet (~8s slow float & ring tilt)
+          2. Upper-Right: Smiling Yellow Star (~4s gentle pulse & twinkle)
+          3. Lower-Left: Colorful Schoolbooks (~6s gentle rocking float)
+          4. Lower-Right: Cute Space Rocket (~5s hover & soft engine glow)
           ======================================================== */}
-      {/* 1. Top-Left: Cute Smiling 3D Yellow Sun */}
-      <div className="absolute top-2 left-3 sm:top-4 sm:left-6 md:top-5 md:left-8 pointer-events-none select-none z-0 animate-sway-sun">
-        <svg className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 drop-shadow-[0_4px_16px_rgba(255,214,0,0.6)]" viewBox="0 0 100 100" fill="none">
+      {/* 1. Upper-Left: Cute Pastel Purple Planet with Colorful Ring */}
+      <div className="absolute top-2 left-2 sm:top-4 sm:left-4 md:top-5 md:left-6 pointer-events-none select-none z-0 animate-pv-planet">
+        <svg
+          className="w-14 h-14 sm:w-18 sm:h-18 md:w-22 md:h-22 drop-shadow-[0_4px_18px_rgba(179,136,255,0.65)]"
+          viewBox="0 0 100 100"
+          fill="none"
+        >
           <defs>
-            <radialGradient id="pvSun" cx="35%" cy="30%" r="65%">
-              <stop offset="0%" stopColor="#FFFDE7" />
-              <stop offset="35%" stopColor="#FFEE58" />
-              <stop offset="75%" stopColor="#FFCA28" />
-              <stop offset="100%" stopColor="#FF9800" />
-            </radialGradient>
-            <linearGradient id="pvSunRay" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#FFF9C4" />
-              <stop offset="100%" stopColor="#FFB300" />
-            </linearGradient>
-          </defs>
-          {/* 8 Sun Beams with Slow Continuous 360° Rotation (22s) */}
-          <g className="animate-rotate-rays origin-center" style={{ transformOrigin: '50px 50px' }}>
-            {[0, 45, 90, 135, 180, 225, 270, 315].map((deg) => (
-              <polygon key={deg} points="47,4 53,4 50,16" fill="url(#pvSunRay)" transform={`rotate(${deg} 50 50)`} opacity="0.9" />
-            ))}
-          </g>
-          <circle cx="50" cy="50" r="30" fill="url(#pvSun)" />
-          <circle cx="42" cy="40" r="9" fill="#FFFFFF" opacity="0.4" />
-          {/* Eyes & Smile (Always Upright!) */}
-          <circle cx="41" cy="48" r="3.2" fill="#2E1600" />
-          <circle cx="39.5" cy="46.5" r="1.2" fill="#FFFFFF" />
-          <circle cx="59" cy="48" r="3.2" fill="#2E1600" />
-          <circle cx="57.5" cy="46.5" r="1.2" fill="#FFFFFF" />
-          <circle cx="37" cy="56" r="4" fill="#FF5252" opacity="0.7" />
-          <circle cx="63" cy="56" r="4" fill="#FF5252" opacity="0.7" />
-          <path d="M 42 55 Q 50 64 58 55" stroke="#2E1600" strokeWidth="2.4" strokeLinecap="round" fill="#FF1744" />
-        </svg>
-      </div>
-
-      {/* 2. Top-Right: Cute Pastel Purple Planet with Glowing Ring (Safe from Close Button) */}
-      <div className="absolute top-14 right-4 sm:top-16 sm:right-6 md:top-18 md:right-8 pointer-events-none select-none z-0 animate-float-planet-alt">
-        <svg className="w-14 h-14 sm:w-18 sm:h-18 md:w-22 md:h-22 drop-shadow-[0_4px_16px_rgba(179,136,255,0.6)]" viewBox="0 0 100 100" fill="none">
-          <defs>
-            <radialGradient id="pvPurple" cx="35%" cy="30%" r="65%">
+            <radialGradient id="pvPurplePlanet" cx="35%" cy="30%" r="65%">
               <stop offset="0%" stopColor="#F3E5F5" />
               <stop offset="40%" stopColor="#CE93D8" />
               <stop offset="85%" stopColor="#9C27B0" />
               <stop offset="100%" stopColor="#6A1B9A" />
             </radialGradient>
-            <linearGradient id="pvGoldRing" x1="0%" y1="0%" x2="100%" y2="100%">
+            <linearGradient id="pvColorfulRing" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stopColor="#FFF9C4" />
-              <stop offset="50%" stopColor="#FFD54F" />
-              <stop offset="100%" stopColor="#FF8F00" />
+              <stop offset="35%" stopColor="#00E5FF" />
+              <stop offset="70%" stopColor="#FF80AB" />
+              <stop offset="100%" stopColor="#FFD54F" />
             </linearGradient>
           </defs>
-          <ellipse cx="50" cy="50" rx="44" ry="14" transform="rotate(-20 50 50)" stroke="url(#pvGoldRing)" strokeWidth="6" opacity="0.9" strokeDasharray="120 120" strokeDashoffset="120" />
-          <circle cx="50" cy="50" r="28" fill="url(#pvPurple)" />
-          <ellipse cx="42" cy="38" rx="10" ry="6" transform="rotate(-25 42 38)" fill="#FFFFFF" opacity="0.35" />
+          {/* Back half of planetary ring */}
+          <g className="animate-pv-ring" style={{ transformOrigin: '50px 50px' }}>
+            <ellipse cx="50" cy="50" rx="44" ry="14" stroke="url(#pvColorfulRing)" strokeWidth="6" opacity="0.9" strokeDasharray="120 120" strokeDashoffset="120" />
+          </g>
+          {/* Planet sphere */}
+          <circle cx="50" cy="50" r="28" fill="url(#pvPurplePlanet)" />
+          {/* Gloss highlight */}
+          <ellipse cx="42" cy="38" rx="10" ry="6" transform="rotate(-25 42 38)" fill="#FFFFFF" opacity="0.4" />
           {/* Kawaii Face */}
           <circle cx="42" cy="49" r="2.8" fill="#1A0738" />
           <circle cx="41" cy="48" r="1" fill="#FFFFFF" />
           <circle cx="58" cy="49" r="2.8" fill="#1A0738" />
           <circle cx="57" cy="48" r="1" fill="#FFFFFF" />
-          <circle cx="39" cy="55" r="3.5" fill="#FF4081" opacity="0.8" />
-          <circle cx="61" cy="55" r="3.5" fill="#FF4081" opacity="0.8" />
-          <path d="M 45 54 Q 50 60 55 54" stroke="#1A0738" strokeWidth="2" strokeLinecap="round" fill="none" />
-          <ellipse cx="50" cy="50" rx="44" ry="14" transform="rotate(-20 50 50)" stroke="url(#pvGoldRing)" strokeWidth="6" opacity="0.9" strokeDasharray="120 120" strokeDashoffset="0" />
+          <circle cx="39" cy="55" r="3.5" fill="#FF4081" opacity="0.85" />
+          <circle cx="61" cy="55" r="3.5" fill="#FF4081" opacity="0.85" />
+          <path d="M 45 54 Q 50 60 55 54" stroke="#1A0738" strokeWidth="2.2" strokeLinecap="round" fill="none" />
+          {/* Front half of planetary ring */}
+          <g className="animate-pv-ring" style={{ transformOrigin: '50px 50px' }}>
+            <ellipse cx="50" cy="50" rx="44" ry="14" stroke="url(#pvColorfulRing)" strokeWidth="6" opacity="0.95" strokeDasharray="120 120" strokeDashoffset="0" />
+          </g>
         </svg>
       </div>
 
-      {/* 3. Mid-Left: Cute Stack of 3D Colorful Schoolbooks */}
-      <div className="hidden sm:block absolute bottom-16 left-3 md:bottom-20 md:left-6 pointer-events-none select-none z-0 animate-rock-books">
-        <svg className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 drop-shadow-[0_6px_18px_rgba(0,184,212,0.45)]" viewBox="0 0 100 100" fill="none">
+      {/* 2. Upper-Right: Cute Smiling Golden 3D Star (Positioned clear of Close button) */}
+      <div className="absolute top-2 right-36 sm:top-3 sm:right-44 md:top-4 md:right-56 pointer-events-none select-none z-0 animate-pv-star">
+        <svg
+          className="w-13 h-13 sm:w-16 sm:h-16 md:w-20 md:h-20"
+          viewBox="0 0 100 100"
+          fill="none"
+        >
           <defs>
-            <linearGradient id="bookTeal" x1="0%" y1="0%" x2="100%" y2="0%">
+            <radialGradient id="pvStarBody" cx="35%" cy="30%" r="65%">
+              <stop offset="0%" stopColor="#FFFDE7" />
+              <stop offset="35%" stopColor="#FFEE58" />
+              <stop offset="75%" stopColor="#FFCA28" />
+              <stop offset="100%" stopColor="#FF9800" />
+            </radialGradient>
+            <linearGradient id="pvStarBorder" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#FFFFFF" />
+              <stop offset="100%" stopColor="#FFA000" />
+            </linearGradient>
+          </defs>
+          {/* 5-Point Rounded 3D Star */}
+          <path
+            d="M 50 6 L 61 33 L 90 35 L 67 54 L 74 83 L 50 68 L 26 83 L 33 54 L 10 35 L 39 33 Z"
+            fill="url(#pvStarBody)"
+            stroke="url(#pvStarBorder)"
+            strokeWidth="3.5"
+            strokeLinejoin="round"
+          />
+          {/* Specular Highlight */}
+          <ellipse cx="44" cy="36" rx="8" ry="4" transform="rotate(-15 44 36)" fill="#FFFFFF" opacity="0.5" />
+          {/* Cute Smiling Face */}
+          <circle cx="43" cy="46" r="3" fill="#2E1600" />
+          <circle cx="42" cy="45" r="1.2" fill="#FFFFFF" />
+          <circle cx="57" cy="46" r="3" fill="#2E1600" />
+          <circle cx="56" cy="45" r="1.2" fill="#FFFFFF" />
+          <circle cx="38" cy="52" r="3.5" fill="#FF5252" opacity="0.8" />
+          <circle cx="62" cy="52" r="3.5" fill="#FF5252" opacity="0.8" />
+          <path d="M 46 51 Q 50 56 54 51" stroke="#2E1600" strokeWidth="2.2" strokeLinecap="round" fill="none" />
+        </svg>
+      </div>
+
+      {/* 3. Lower-Left: Cute Stack of 3D Colorful Schoolbooks */}
+      <div className="hidden sm:block absolute bottom-3 left-3 sm:bottom-4 sm:left-4 md:bottom-6 md:left-6 pointer-events-none select-none z-0 animate-pv-books">
+        <svg
+          className="w-14 h-14 sm:w-18 sm:h-18 md:w-22 md:h-22 drop-shadow-[0_6px_18px_rgba(0,184,212,0.5)]"
+          viewBox="0 0 100 100"
+          fill="none"
+        >
+          <defs>
+            <linearGradient id="pvBookTeal" x1="0%" y1="0%" x2="100%" y2="0%">
               <stop offset="0%" stopColor="#00E5FF" />
               <stop offset="100%" stopColor="#0091EA" />
             </linearGradient>
-            <linearGradient id="bookCoral" x1="0%" y1="0%" x2="100%" y2="0%">
+            <linearGradient id="pvBookCoral" x1="0%" y1="0%" x2="100%" y2="0%">
               <stop offset="0%" stopColor="#FF80AB" />
               <stop offset="100%" stopColor="#E91E63" />
             </linearGradient>
-            <linearGradient id="bookGold" x1="0%" y1="0%" x2="100%" y2="0%">
+            <linearGradient id="pvBookGold" x1="0%" y1="0%" x2="100%" y2="0%">
               <stop offset="0%" stopColor="#FFF59D" />
               <stop offset="100%" stopColor="#FFB300" />
             </linearGradient>
           </defs>
-          {/* Bottom Book (Teal) */}
-          <rect x="18" y="66" width="64" height="15" rx="3.5" fill="url(#bookTeal)" stroke="#006064" strokeWidth="1.5" />
+          {/* Bottom Book (Cyan/Teal) */}
+          <rect x="18" y="66" width="64" height="15" rx="3.5" fill="url(#pvBookTeal)" stroke="#006064" strokeWidth="1.8" />
           <rect x="22" y="69" width="56" height="9" fill="#FFFDE7" />
           <line x1="22" y1="73.5" x2="78" y2="73.5" stroke="#E0E0E0" strokeWidth="1" />
           {/* Middle Book (Coral Pink) */}
-          <rect x="22" y="50" width="58" height="14" rx="3" fill="url(#bookCoral)" stroke="#880E4F" strokeWidth="1.5" transform="rotate(3 51 57)" />
+          <rect x="22" y="50" width="58" height="14" rx="3" fill="url(#pvBookCoral)" stroke="#880E4F" strokeWidth="1.8" transform="rotate(3 51 57)" />
           <rect x="26" y="53" width="50" height="8" fill="#FFFDE7" transform="rotate(3 51 57)" />
-          {/* Top Book (Golden Yellow with cute star) */}
-          <rect x="26" y="35" width="52" height="13" rx="3" fill="url(#bookGold)" stroke="#E65100" strokeWidth="1.5" transform="rotate(-4 52 41)" />
+          {/* Top Book (Golden Yellow) */}
+          <rect x="26" y="35" width="52" height="13" rx="3" fill="url(#pvBookGold)" stroke="#E65100" strokeWidth="1.8" transform="rotate(-4 52 41)" />
           <circle cx="52" cy="41" r="3.5" fill="#FFFFFF" opacity="0.9" />
           {/* Cute Bookmark Ribbon hanging down */}
           <path d="M 66 40 L 71 58 L 66 54 L 61 58 Z" fill="#7C4DFF" />
         </svg>
       </div>
 
-      {/* 4. Mid-Right: Friendly Cartoon Astronaut */}
-      <div className="hidden sm:block absolute top-1/3 right-3 md:right-6 pointer-events-none select-none z-0 animate-float-astronaut">
-        <svg className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 drop-shadow-[0_6px_18px_rgba(0,229,255,0.45)]" viewBox="0 0 100 100" fill="none">
+      {/* 4. Lower-Right: Cute Miniature 3D Cartoon Rocket */}
+      <div className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 md:bottom-6 md:right-6 pointer-events-none select-none z-0 animate-pv-rocket">
+        <svg
+          className="w-13 h-13 sm:w-16 sm:h-16 md:w-20 md:h-20 drop-shadow-[0_4px_18px_rgba(255,112,67,0.55)]"
+          viewBox="0 0 80 80"
+          fill="none"
+        >
           <defs>
-            <radialGradient id="pvVisor" cx="35%" cy="30%" r="65%">
-              <stop offset="0%" stopColor="#80D8FF" />
-              <stop offset="50%" stopColor="#00E5FF" />
-              <stop offset="100%" stopColor="#0277BD" />
-            </radialGradient>
-          </defs>
-          {/* Suit Body */}
-          <ellipse cx="50" cy="62" rx="16" ry="18" fill="#FFFFFF" stroke="#B0BEC5" strokeWidth="2" />
-          <rect x="43" y="57" width="14" height="8" rx="2.5" fill="#00E5FF" />
-          {/* Waving Hand */}
-          <path d="M 64 54 Q 78 44 74 34 Q 68 34 62 46" fill="#FFFFFF" stroke="#B0BEC5" strokeWidth="2" strokeLinecap="round" />
-          <circle cx="75" cy="35" r="4" fill="#FF4081" />
-          {/* Helmet Dome */}
-          <circle cx="50" cy="34" r="20" fill="#FFFFFF" stroke="#90A4AE" strokeWidth="2" />
-          <ellipse cx="50" cy="35" rx="14" ry="11" fill="url(#pvVisor)" />
-          <ellipse cx="46" cy="30" rx="5" ry="3" transform="rotate(-20 46 30)" fill="#FFFFFF" opacity="0.65" />
-          {/* Cute Face inside */}
-          <circle cx="47" cy="36" r="1.5" fill="#FFFFFF" />
-          <circle cx="53" cy="36" r="1.5" fill="#FFFFFF" />
-          <path d="M 48 39 Q 50 41 52 39" stroke="#FFFFFF" strokeWidth="1" strokeLinecap="round" fill="none" />
-        </svg>
-      </div>
-
-      {/* 5. Bottom-Left: Cute Miniature Rocket */}
-      <div className="absolute bottom-3 left-4 sm:bottom-4 sm:left-14 md:bottom-5 md:left-24 pointer-events-none select-none z-0 animate-float-rocket">
-        <svg className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 -rotate-12 drop-shadow-[0_4px_16px_rgba(255,112,67,0.5)]" viewBox="0 0 80 80" fill="none">
-          <defs>
-            <linearGradient id="pvFlame" x1="50%" y1="0%" x2="50%" y2="100%">
+            <linearGradient id="pvFlameGrad" x1="50%" y1="0%" x2="50%" y2="100%">
               <stop offset="0%" stopColor="#FFEA00" />
               <stop offset="60%" stopColor="#FF6D00" />
               <stop offset="100%" stopColor="#FF1744" />
             </linearGradient>
           </defs>
-          <path d="M 36 58 Q 28 76 34 78 Q 40 70 40 76 Q 42 70 46 78 Q 52 76 44 58 Z" fill="url(#pvFlame)" className="animate-engine-glow" />
-          <path d="M 28 45 L 20 58 L 30 55 Z" fill="#FF5252" />
-          <path d="M 52 45 L 60 58 L 50 55 Z" fill="#FF5252" />
-          <path d="M 40 10 C 30 24 28 44 30 58 L 50 58 C 52 44 50 24 40 10 Z" fill="#FFFFFF" stroke="#90A4AE" strokeWidth="1.5" />
+          {/* Engine Flame with Soft Glow */}
+          <g className="animate-pv-flame" style={{ transformOrigin: '40px 58px' }}>
+            <path d="M 36 58 Q 28 76 34 78 Q 40 70 40 76 Q 42 70 46 78 Q 52 76 44 58 Z" fill="url(#pvFlameGrad)" filter="drop-shadow(0 0 6px #FF6D00)" />
+          </g>
+          {/* Left and Right Fins */}
+          <path d="M 28 45 L 18 58 L 30 55 Z" fill="#FF5252" stroke="#B71C1C" strokeWidth="1.2" />
+          <path d="M 52 45 L 62 58 L 50 55 Z" fill="#FF5252" stroke="#B71C1C" strokeWidth="1.2" />
+          {/* Rocket Fuselage */}
+          <path d="M 40 10 C 30 24 28 44 30 58 L 50 58 C 52 44 50 24 40 10 Z" fill="#FFFFFF" stroke="#90A4AE" strokeWidth="1.8" />
+          {/* Red Nose Cone */}
           <path d="M 40 10 C 35 18 33 24 33 28 L 47 28 C 47 24 45 18 40 10 Z" fill="#FF5252" />
-          <circle cx="40" cy="38" r="7" fill="#00E5FF" stroke="#FFFFFF" strokeWidth="1.8" />
+          {/* Porthole Window with Glass Reflection */}
+          <circle cx="40" cy="38" r="7" fill="#00E5FF" stroke="#FFFFFF" strokeWidth="2" />
+          <path d="M 37 34 Q 40 33 43 36" stroke="#FFFFFF" strokeWidth="1.5" strokeLinecap="round" />
         </svg>
       </div>
 
-      {/* 6. Bottom-Right: Small Cute Turquoise Planet */}
-      <div className="absolute bottom-3 right-4 sm:bottom-4 sm:right-8 md:bottom-5 md:right-12 pointer-events-none select-none z-0 animate-float-planet-alt">
-        <svg className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 drop-shadow-[0_4px_16px_rgba(0,229,255,0.45)]" viewBox="0 0 80 80" fill="none">
-          <defs>
-            <radialGradient id="pvTurq" cx="35%" cy="30%" r="65%">
-              <stop offset="0%" stopColor="#E0F7FA" />
-              <stop offset="40%" stopColor="#4DD0E1" />
-              <stop offset="85%" stopColor="#00ACC1" />
-              <stop offset="100%" stopColor="#006064" />
-            </radialGradient>
-          </defs>
-          <circle cx="40" cy="40" r="26" fill="url(#pvTurq)" />
-          <circle cx="30" cy="32" r="5" fill="#80DEEA" opacity="0.6" />
-          <circle cx="50" cy="38" r="6" fill="#00838F" opacity="0.6" />
-          <circle cx="34" cy="42" r="2.2" fill="#004D40" />
-          <circle cx="46" cy="42" r="2.2" fill="#004D40" />
-          <circle cx="28" cy="47" r="3" fill="#FF80AB" opacity="0.75" />
-          <circle cx="52" cy="47" r="3" fill="#FF80AB" opacity="0.75" />
-          <path d="M 37 45 Q 40 49 43 45" stroke="#004D40" strokeWidth="1.8" strokeLinecap="round" fill="none" />
-        </svg>
-      </div>
-
-      {/* 7. Tiny Twinkling Stars & Soft Magical Sparkles */}
+      {/* Ambient Twinkling Stars */}
       {[
-        { top: '10%', left: '20%', size: 'w-4 h-4', color: '#FFD600', anim: 'animate-twinkle-1' },
-        { top: '12%', right: '28%', size: 'w-3 h-3', color: '#FF4081', anim: 'animate-twinkle-2' },
-        { top: '45%', left: '8%', size: 'w-4 h-4', color: '#00E5FF', anim: 'animate-twinkle-3' },
-        { bottom: '24%', right: '12%', size: 'w-4 h-4', color: '#7C4DFF', anim: 'animate-twinkle-1' },
-        { bottom: '15%', left: '22%', size: 'w-3 h-3', color: '#FFD600', anim: 'animate-twinkle-2' },
+        { top: '12%', left: '22%', size: 'w-3.5 h-3.5', color: '#FFD600', anim: 'animate-twinkle-1' },
+        { top: '15%', right: '30%', size: 'w-3 h-3', color: '#FF4081', anim: 'animate-twinkle-2' },
+        { top: '48%', left: '6%', size: 'w-3.5 h-3.5', color: '#00E5FF', anim: 'animate-twinkle-3' },
+        { bottom: '26%', right: '10%', size: 'w-3.5 h-3.5', color: '#7C4DFF', anim: 'animate-twinkle-1' },
       ].map((star, i) => (
         <svg
           key={i}
@@ -334,18 +329,42 @@ export const FullScreenClassPhotoModal: React.FC<FullScreenClassPhotoModalProps>
         </svg>
       ))}
 
-      {/* 1. TOP BAR: Compact Header + Close Button */}
+      {/* 1. TOP BAR: Volume Controls (left) + Close Button (right) */}
       <div
-        className="w-full max-w-7xl mx-auto flex items-center justify-between gap-3 px-3 py-1.5 select-none flex-shrink-0 z-10"
+        className="w-full max-w-7xl mx-auto flex items-center justify-between gap-3 px-3 py-1 select-none flex-shrink-0 z-20"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Class Name Badge with Golden Glow */}
-        <div className="inline-flex items-center gap-2 bg-[#1A0E3C] border-2 border-[#FFD600] px-4 sm:px-6 py-1.5 rounded-full shadow-[0_0_20px_rgba(255,214,0,0.4)]">
-          <Sparkles className="w-5 h-5 text-[#FFD600] animate-spin" />
-          <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-[#FFD600] tracking-tight font-heading uppercase drop-shadow-[0_0_8px_#FFD600]">
-            {displayName}
-          </h2>
-          <Sparkles className="w-5 h-5 text-[#FFD600] animate-spin" />
+        {/* Audio Volume Controls (Tăng / Giảm Âm Lượng Nhạc Nền) */}
+        <div className="inline-flex items-center gap-1 bg-[#1A0E3C]/80 backdrop-blur-sm border border-[#7C4DFF]/70 px-2.5 py-1 rounded-full shadow-sm text-xs font-black text-[#E0E7FF]">
+          <Volume2 className="w-3.5 h-3.5 text-[#00D9F5]" />
+          <span className="text-[#00D9F5]">BGM:</span>
+          <button
+            type="button"
+            onClick={() => {
+              const next = decreaseBgmVolume(10);
+              setBgmVolume(next);
+            }}
+            disabled={bgmVolume <= 0}
+            title="Giảm âm lượng (-10%)"
+            aria-label="Decrease volume"
+            className="w-5 h-5 flex items-center justify-center rounded bg-[#12092E] hover:bg-[#311B92] text-[#FFD600] font-black text-xs transition-all cursor-pointer disabled:opacity-30"
+          >
+            -
+          </button>
+          <span className="w-8 text-center text-[#00E676]">{bgmVolume}%</span>
+          <button
+            type="button"
+            onClick={() => {
+              const next = increaseBgmVolume(10);
+              setBgmVolume(next);
+            }}
+            disabled={bgmVolume >= 100}
+            title="Tăng âm lượng (+10%)"
+            aria-label="Increase volume"
+            className="w-5 h-5 flex items-center justify-center rounded bg-[#12092E] hover:bg-[#311B92] text-[#00E676] font-black text-xs transition-all cursor-pointer disabled:opacity-30"
+          >
+            +
+          </button>
         </div>
 
         {/* Close Button */}
@@ -353,9 +372,9 @@ export const FullScreenClassPhotoModal: React.FC<FullScreenClassPhotoModalProps>
           onClick={onClose}
           type="button"
           aria-label="Close photo view"
-          className="inline-flex items-center gap-2 bg-gradient-to-r from-[#FF4F91] to-[#E91E63] text-white font-black text-sm sm:text-base px-4 sm:px-5 py-2 rounded-full border-2 border-[#FF80AB] shadow-[0_0_15px_rgba(255,79,145,0.5)] hover:brightness-110 active:scale-95 transition-all cursor-pointer"
+          className="inline-flex items-center gap-1.5 bg-gradient-to-r from-[#FF4F91] to-[#E91E63] text-white font-black text-xs sm:text-sm px-3.5 sm:px-4 py-1.5 rounded-full border-2 border-[#FF80AB] shadow-[0_0_15px_rgba(255,79,145,0.5)] hover:brightness-110 active:scale-95 transition-all cursor-pointer"
         >
-          <X className="w-5 h-5 text-white stroke-[3]" />
+          <X className="w-4 h-4 text-white stroke-[3]" />
           <span>CLOSE (ESC)</span>
         </button>
       </div>
@@ -388,8 +407,20 @@ export const FullScreenClassPhotoModal: React.FC<FullScreenClassPhotoModalProps>
           </div>
         </div>
 
-        {/* EXTRA-LARGE CLASS PHOTO AREA (~82% width, dominant element) */}
-        <div className="flex-1 w-full md:w-[85%] lg:w-[84%] h-full min-h-0 flex items-center justify-center relative p-1 sm:p-2">
+        {/* EXTRA-LARGE CLASS PHOTO AREA (~85% width, dominant element) */}
+        <div className="flex-1 w-full md:w-[85%] lg:w-[84%] h-full min-h-0 flex flex-col items-center justify-center relative p-1 sm:p-2">
+          
+          {/* DYNAMIC CLASS TITLE – CENTERED RELATIVE TO MAIN CLASS PHOTO CONTAINER (+25% Font Size) */}
+          <div className="w-full flex items-center justify-center mb-1.5 sm:mb-2 z-20 flex-shrink-0">
+            <div className="inline-flex items-center gap-2 sm:gap-3 bg-[#1A0E3C]/95 border-2 sm:border-3 border-[#FFD600] px-6 sm:px-10 py-1.5 sm:py-2 rounded-full shadow-[0_0_28px_rgba(255,214,0,0.55),0_6px_20px_rgba(0,0,0,0.6)]">
+              <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-[#FFD600] animate-spin flex-shrink-0" />
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-[40px] font-black text-[#FFD600] tracking-tight font-heading uppercase drop-shadow-[0_0_15px_rgba(255,214,0,0.85),0_3px_6px_rgba(0,0,0,0.9)] whitespace-nowrap leading-none">
+                {displayName}
+              </h2>
+              <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-[#FFD600] animate-spin flex-shrink-0" />
+            </div>
+          </div>
+
           {!hasValidPhotoUrl || loadError ? (
             /* Friendly placeholder for Class 5.8 / no photo */
             <div className="flex flex-col items-center justify-center p-8 sm:p-10 text-center bg-[#170E3A]/90 rounded-3xl border-3 border-[#7C4DFF] shadow-[0_0_30px_rgba(124,77,255,0.4)] max-w-md animate-fadeIn">
@@ -407,7 +438,7 @@ export const FullScreenClassPhotoModal: React.FC<FullScreenClassPhotoModalProps>
               </div>
             </div>
           ) : (
-            <div className="relative w-full h-full max-h-[82vh] flex items-center justify-center overflow-hidden">
+            <div className="relative w-full flex-1 min-h-0 flex items-center justify-center overflow-hidden">
               {/* Golden Celestial Frame */}
               <img
                 src={activeImgSrc}

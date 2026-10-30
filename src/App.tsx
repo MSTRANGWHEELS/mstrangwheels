@@ -22,7 +22,15 @@ import { ToastContainer, ToastMessage } from './components/ui/Toast';
 import { CartoonLandscapeBackground } from './components/ui/CartoonLandscapeBackground';
 import { playVictorySound } from './utils/soundEffects';
 import { announceWinner, stopVoice } from './services/voiceService';
-import { initBgm, setBgmEnabled, setBgmScreen } from './services/bgmService';
+import {
+  initBgm,
+  setBgmEnabled,
+  setBgmScreen,
+  getBgmVolumePercent,
+  increaseBgmVolume,
+  decreaseBgmVolume,
+  onBgmVolumeChange,
+} from './services/bgmService';
 import { Volume2, VolumeX, Settings, Sparkles, Play, PlusCircle, RotateCw } from 'lucide-react';
 
 export function App() {
@@ -36,6 +44,7 @@ export function App() {
   const [isPhotoModalOpen, setIsPhotoModalOpen] = useState<boolean>(false);
   const [isManagerOpen, setIsManagerOpen] = useState<boolean>(false);
   const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
+  const [bgmVolume, setBgmVolume] = useState<number>(() => getBgmVolumePercent());
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
 
   // =========================================================================
@@ -56,6 +65,11 @@ export function App() {
 
   const dismissToast = useCallback((id: string) => {
     setToasts((prev) => prev.filter((t) => t.id !== id));
+  }, []);
+
+  // Sync BGM volume with background service singleton
+  useEffect(() => {
+    return onBgmVolumeChange((vol) => setBgmVolume(vol));
   }, []);
 
   // 1. Initial Load & Selected Class Restore
@@ -548,35 +562,72 @@ export function App() {
             </div>
           </div>
 
-          {/* Audio Toggle & Manage Classes Toolbar (Stacked vertically on right for clean clearance) */}
-          <div className="mt-1 sm:mt-0 sm:absolute sm:top-1/2 sm:-translate-y-1/2 sm:right-3 flex flex-row sm:flex-col items-center gap-1">
-            <CuteButton
-              color="cream"
-              size="sm"
-              disabled={isSpinning}
-              onClick={() => {
-                const next = !soundEnabled;
-                setSoundEnabled(next);
-                setBgmEnabled(next);
-                if (!next) stopVoice();
-              }}
-              icon={soundEnabled ? <Volume2 className="w-3 h-3 text-[#00D9F5]" /> : <VolumeX className="w-3 h-3 text-white/50" />}
-              title={soundEnabled ? 'Music, sound effects & AI MC Voice ON' : 'Audio MUTED'}
-              className="py-0.5 px-2 text-[11px] rounded-lg"
-            >
-              {soundEnabled ? 'Voice ON' : 'Muted'}
-            </CuteButton>
+          {/* Audio Toggle, BGM Volume & Manage Classes Toolbar */}
+          <div className="mt-1 sm:mt-0 sm:absolute sm:top-1/2 sm:-translate-y-1/2 sm:right-2.5 lg:right-3.5 flex flex-wrap sm:flex-col items-center justify-center gap-1 z-20">
+            <div className="flex items-center gap-1">
+              <CuteButton
+                color="cream"
+                size="sm"
+                disabled={isSpinning}
+                onClick={() => {
+                  const next = !soundEnabled;
+                  setSoundEnabled(next);
+                  setBgmEnabled(next);
+                  if (!next) stopVoice();
+                }}
+                icon={soundEnabled ? <Volume2 className="w-3 h-3 text-[#00D9F5]" /> : <VolumeX className="w-3 h-3 text-white/50" />}
+                title={soundEnabled ? 'Music, sound effects & AI MC Voice ON' : 'Audio MUTED'}
+                className="py-0.5 px-2 text-[10px] sm:text-[11px] rounded-lg"
+              >
+                {soundEnabled ? 'Voice ON' : 'Muted'}
+              </CuteButton>
 
-            <CuteButton
-              color="cream"
-              size="sm"
-              disabled={isSpinning}
-              onClick={() => setIsManagerOpen(true)}
-              icon={<Settings className="w-3 h-3 text-[#FFD600]" />}
-              className="py-0.5 px-2 text-[11px] rounded-lg"
+              <CuteButton
+                color="cream"
+                size="sm"
+                disabled={isSpinning}
+                onClick={() => setIsManagerOpen(true)}
+                icon={<Settings className="w-3 h-3 text-[#FFD600]" />}
+                className="py-0.5 px-2 text-[10px] sm:text-[11px] rounded-lg"
+              >
+                Manage
+              </CuteButton>
+            </div>
+
+            {/* BGM Volume +/- Control Pill */}
+            <div
+              className="inline-flex items-center gap-1 bg-[#12092E]/95 border border-[#7C4DFF] px-2 py-0.5 rounded-full text-[10px] font-black text-[#E0E7FF] shadow-[0_0_8px_rgba(124,77,255,0.4)] select-none"
+              title="Điều chỉnh âm lượng nhạc nền (BGM Volume)"
             >
-              Manage
-            </CuteButton>
+              <span className="text-[#00D9F5]">BGM:</span>
+              <button
+                type="button"
+                onClick={() => {
+                  const next = decreaseBgmVolume(10);
+                  setBgmVolume(next);
+                }}
+                disabled={bgmVolume <= 0 || !soundEnabled}
+                title="Giảm âm lượng (-10%)"
+                aria-label="Decrease volume"
+                className="w-4 h-4 flex items-center justify-center rounded bg-[#1A0E3C] hover:bg-[#311B92] text-[#FFD600] font-black cursor-pointer disabled:opacity-30 leading-none transition-all active:scale-95"
+              >
+                -
+              </button>
+              <span className="w-6 text-center text-[#00E676]">{bgmVolume}%</span>
+              <button
+                type="button"
+                onClick={() => {
+                  const next = increaseBgmVolume(10);
+                  setBgmVolume(next);
+                }}
+                disabled={bgmVolume >= 100 || !soundEnabled}
+                title="Tăng âm lượng (+10%)"
+                aria-label="Increase volume"
+                className="w-4 h-4 flex items-center justify-center rounded bg-[#1A0E3C] hover:bg-[#311B92] text-[#00E676] font-black cursor-pointer disabled:opacity-30 leading-none transition-all active:scale-95"
+              >
+                +
+              </button>
+            </div>
           </div>
 
         </div>

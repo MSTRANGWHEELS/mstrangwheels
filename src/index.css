@@ -281,6 +281,95 @@
   animation: twinkleSoft 4.8s ease-in-out 1.9s infinite;
 }
 
+/* ========================================================
+   FULL-SCREEN PHOTO VIEWER – 4 CUTE 3D CARTOON ICONS
+   1. Upper-Left: Cute Purple Planet (~8s float & slow ring tilt)
+   2. Upper-Right: Smiling Yellow Star (~4s gentle pulse & twinkle)
+   3. Lower-Left: Colorful Schoolbooks (~6s gentle rocking float)
+   4. Lower-Right: Cute Space Rocket (~5s hover & soft engine glow)
+   ======================================================== */
+@keyframes pvPurplePlanetFloat {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(3deg);
+  }
+}
+
+@keyframes pvPurplePlanetRing {
+  0%, 100% {
+    transform: rotate(-22deg) scale(1);
+  }
+  50% {
+    transform: rotate(-16deg) scale(1.02);
+  }
+}
+
+@keyframes pvSmilingStarPulse {
+  0%, 100% {
+    transform: translateY(0px) scale(0.96) rotate(0deg);
+    filter: drop-shadow(0 4px 12px rgba(255, 214, 0, 0.55));
+  }
+  50% {
+    transform: translateY(-7px) scale(1.06) rotate(2.5deg);
+    filter: drop-shadow(0 6px 20px rgba(255, 214, 0, 0.9));
+  }
+}
+
+@keyframes pvBooksRockFloat {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-4px) rotate(-3deg);
+  }
+  75% {
+    transform: translateY(-7px) rotate(2.5deg);
+  }
+}
+
+@keyframes pvRocketHoverFloat {
+  0%, 100% {
+    transform: translateY(0px) rotate(-14deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(-8deg);
+  }
+}
+
+@keyframes pvRocketFlamePulse {
+  0%, 100% {
+    opacity: 0.75;
+    transform: scale(0.92);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.12);
+  }
+}
+
+.animate-pv-planet {
+  animation: pvPurplePlanetFloat 8s ease-in-out infinite;
+}
+.animate-pv-ring {
+  animation: pvPurplePlanetRing 8s ease-in-out infinite;
+  transform-origin: center;
+}
+.animate-pv-star {
+  animation: pvSmilingStarPulse 4s ease-in-out infinite;
+}
+.animate-pv-books {
+  animation: pvBooksRockFloat 6s ease-in-out infinite;
+}
+.animate-pv-rocket {
+  animation: pvRocketHoverFloat 5s ease-in-out infinite;
+}
+.animate-pv-flame {
+  animation: pvRocketFlamePulse 2.4s ease-in-out infinite;
+  transform-origin: center top;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-float-planet,
   .animate-float-planet-alt,
@@ -293,7 +382,13 @@
   .animate-twinkle-1,
   .animate-twinkle-2,
   .animate-twinkle-3,
-  .animate-twinkle-4 {
+  .animate-twinkle-4,
+  .animate-pv-planet,
+  .animate-pv-ring,
+  .animate-pv-star,
+  .animate-pv-books,
+  .animate-pv-rocket,
+  .animate-pv-flame {
     animation: none !important;
   }
 }
