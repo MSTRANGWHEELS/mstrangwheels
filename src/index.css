@@ -331,10 +331,10 @@
 
 @keyframes pvRocketHoverFloat {
   0%, 100% {
-    transform: translateY(0px) rotate(-14deg);
+    transform: translateY(0px) rotate(-12deg);
   }
   50% {
-    transform: translateY(-8px) rotate(-8deg);
+    transform: translateY(-3px) rotate(-6deg);
   }
 }
 
