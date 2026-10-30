@@ -389,15 +389,20 @@ export const FullScreenClassPhotoModal: React.FC<FullScreenClassPhotoModalProps>
 
           {/* Mobile Motivational Message Banner (Visible only on < md screens) */}
           <div className="md:hidden w-full flex justify-center mt-1 z-20">
-            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-[#FFFDF3] via-[#DDF9FA] to-[#D8F1FF] border-2 border-[#79DDEA] px-3.5 py-1 rounded-full shadow-[0_2px_12px_rgba(121,221,234,0.35),0_0_8px_rgba(255,217,106,0.25)] max-w-[94%]">
-              <span className="text-xs text-[#FFD96A]">✨</span>
-              <span
-                className="font-heading font-black text-xs sm:text-sm text-[#164A9B] truncate"
-                style={{ textShadow: '0 1px 1px rgba(255,253,243,0.9)' }}
-              >
-                {currentMessage.text}
+            <div className="inline-flex flex-col items-center justify-center bg-gradient-to-r from-[#FFFDF3] via-[#DDF9FA] to-[#D8F1FF] border-2 border-[#79DDEA] px-3.5 py-1 rounded-2xl shadow-[0_2px_12px_rgba(121,221,234,0.35),0_0_8px_rgba(255,217,106,0.25)] max-w-[94%] text-center">
+              <div className="flex items-center gap-1.5">
+                <span className="text-xs text-[#FFD96A]">✨</span>
+                <span
+                  className="font-heading font-black text-xs sm:text-sm text-[#164A9B] truncate"
+                  style={{ textShadow: '0 1px 1px rgba(255,253,243,0.9)' }}
+                >
+                  {currentMessage.text}
+                </span>
+                <span className="text-xs text-[#FFD96A]">✨</span>
+              </div>
+              <span className="text-[10px] sm:text-[11px] font-bold text-[#C76A25] leading-tight">
+                {currentMessage.vietnamese}
               </span>
-              <span className="text-xs text-[#FFD96A]">✨</span>
             </div>
           </div>
         </div>

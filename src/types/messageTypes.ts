@@ -2,6 +2,7 @@ export interface EnglishMessageItem {
   id: string;
   index: number;
   text: string;
+  vietnamese: string;
   meaning: string;
   ariaDescription: string;
 }

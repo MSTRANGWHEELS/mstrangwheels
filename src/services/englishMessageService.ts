@@ -2,79 +2,91 @@ import { EnglishMessageItem } from '../types/messageTypes';
 import { safeStorage } from './storageService';
 
 /**
- * EXACT 10 MOTIVATIONAL ENGLISH MESSAGES
+ * EXACT 10 LOCKED TEACHER-APPROVED BILINGUAL ENGLISH MESSAGES
  * Designed for primary school students (aged 6-11)
- * Colors: Dark Blue typography (#164A9B)
+ * English: Deep Royal Blue typography (#164A9B)
+ * Vietnamese: Warm Deep Orange typography (#C76A25) with complete parentheses ( )
+ * IMMUTABLE SOURCE OF TRUTH - STRICT CONTENT LOCK
  */
 export const ENGLISH_MESSAGES: EnglishMessageItem[] = [
   {
     id: 'msg_english_is_fun',
     index: 0,
     text: 'English is fun!',
-    meaning: 'English learning is fun and enjoyable.',
+    vietnamese: '(Học tiếng Anh thật vui!)',
+    meaning: '(Học tiếng Anh thật vui!)',
     ariaDescription: 'Smiling schoolbook with ABC letters and a cheerful child holding it.',
   },
   {
     id: 'msg_you_can_do_it',
     index: 1,
     text: 'You can do it!',
-    meaning: 'Confidence and self-belief.',
+    vietnamese: '(Em làm được mà!)',
+    meaning: '(Em làm được mà!)',
     ariaDescription: 'Smiling schoolchild giving an encouraging thumbs-up with a golden star.',
   },
   {
     id: 'msg_keep_trying',
     index: 2,
     text: 'Keep trying!',
-    meaning: 'Perseverance and effort.',
+    vietnamese: '(Cứ cố gắng nhé!)',
+    meaning: '(Cứ cố gắng nhé!)',
     ariaDescription: 'Cute schoolchild climbing three colorful steps toward a glowing golden star.',
   },
   {
     id: 'msg_believe_in_yourself',
     index: 3,
     text: 'Believe in yourself!',
-    meaning: 'Confidence and courage.',
+    vietnamese: '(Hãy tin vào chính mình!)',
+    meaning: '(Hãy tin vào chính mình!)',
     ariaDescription: 'Smiling schoolchild wearing a pastel superhero cape with a glowing golden heart.',
   },
   {
     id: 'msg_learn_and_shine',
     index: 4,
     text: 'Learn and shine!',
-    meaning: 'Learning helps children shine.',
+    vietnamese: '(Học tập và tỏa sáng!)',
+    meaning: '(Học tập và tỏa sáng!)',
     ariaDescription: 'Adorable open schoolbook with a glowing golden star rising above it.',
   },
   {
     id: 'msg_every_day_we_grow',
     index: 5,
     text: 'Every day, we grow!',
-    meaning: 'Daily growth and improvement.',
+    vietnamese: '(Mỗi ngày một tiến bộ!)',
+    meaning: '(Mỗi ngày một tiến bộ!)',
     ariaDescription: 'Cute green seedling in a pastel pot with a smiling warm sun.',
   },
   {
     id: 'msg_mistakes_help_us_learn',
     index: 6,
     text: 'Mistakes help us learn!',
-    meaning: 'Learning from mistakes.',
+    vietnamese: '(Học từ lỗi sai, tiến bộ mỗi ngày!)',
+    meaning: '(Học từ lỗi sai, tiến bộ mỗi ngày!)',
     ariaDescription: 'Smiling pastel pencil in a notebook with a friendly glowing light bulb.',
   },
   {
     id: 'msg_be_kind_be_brave',
     index: 7,
     text: 'Be kind, be brave!',
-    meaning: 'Kindness, friendship, and courage.',
+    vietnamese: '(Sống tử tế, luôn dũng cảm!)',
+    meaning: '(Sống tử tế, luôn dũng cảm!)',
     ariaDescription: 'Two adorable schoolchildren helping each other with a warm golden heart.',
   },
   {
     id: 'msg_dream_big_little_star',
     index: 8,
     text: 'Dream big, little star!',
-    meaning: 'Dreams and ambition.',
+    vietnamese: '(Ngôi sao nhỏ, ước mơ lớn!)',
+    meaning: '(Ngôi sao nhỏ, ước mơ lớn!)',
     ariaDescription: 'Smiling golden star and a cute pastel rocket flying toward the cosmos.',
   },
   {
     id: 'msg_speak_english_with_a_smile',
     index: 9,
     text: 'Speak English with a smile!',
-    meaning: 'Confident and joyful English communication.',
+    vietnamese: '(Vui cười, tự tin nói tiếng Anh!)',
+    meaning: '(Vui cười, tự tin nói tiếng Anh!)',
     ariaDescription: 'Two cartoon schoolchildren talking happily with Hello and Hi speech bubbles.',
   },
 ];

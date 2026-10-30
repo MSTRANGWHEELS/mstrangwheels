@@ -68,9 +68,10 @@ export const MagicalEnglishMessageCard: React.FC<MagicalEnglishMessageCardProps>
         {message.text}
       </h3>
 
-      {/* Short Educational Meaning Explanation */}
-      <p className="relative text-[9.5px] sm:text-[10.5px] font-bold text-[#164A9B]/80 leading-snug mt-1 px-1">
-        {message.meaning}
+      {/* LOCKED VIETNAMESE TRANSLATION (Immediately BELOW English sentence) */}
+      {/* Font size: ~65% of English text | Color: Warm Deep Orange #C76A25 | Weight: 600-700 */}
+      <p className="relative font-bold text-[10.5px] sm:text-[11.5px] md:text-[12.5px] lg:text-[13px] xl:text-[13.5px] text-[#C76A25] leading-snug mt-1 px-1 tracking-normal">
+        {message.vietnamese}
       </p>
     </div>
   );
